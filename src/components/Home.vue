@@ -1,0 +1,111 @@
+<template>
+  <div>
+    <div>
+      <el-menu
+        :default-active="activeIndex2"
+        class="topmenu"
+        mode="horizontal"
+        @select="handleSelect"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b"
+        :router="isRouter"
+      >
+        <el-menu-item index="/home">MERCER'S WORK PLATFORM</el-menu-item>
+        <el-menu-item index="3">消息中心</el-menu-item>
+        <el-menu-item index="/home/myself" class="myself">我的</el-menu-item>
+      </el-menu>
+    </div>
+    <el-container>
+      <el-aside :width="isCollapse ? '70px' : '210px'">
+        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
+          <el-radio-button :label="false">展开</el-radio-button>
+          <el-radio-button :label="true">收起</el-radio-button>
+        </el-radio-group>
+        <el-menu
+          default-active="1-4-1"
+          class="el-menu-vertical-demo"
+          @open="handleOpen"
+          @close="handleClose"
+          :collapse="isCollapse"
+          :router="isRouter"
+        >
+          <el-menu-item index="1">
+            <i class="el-icon-chat-line-round"></i>
+            <span slot="title">消息</span>
+          </el-menu-item>
+          <el-submenu index="2">
+            <template slot="title">
+              <i class="el-icon-notebook-2"></i>
+              <span slot="title">通讯录</span>
+            </template>
+            <el-menu-item index="1-1">
+              <i class="el-icon-circle-plus"></i>
+              <span slot="title">新的联系人</span>
+            </el-menu-item>
+            <el-menu-item index="1-1">
+              <i class="el-icon-s-custom"></i>
+              <span slot="title">组织架构</span>
+            </el-menu-item>
+            <el-menu-item index="/home/friend_list">
+              <i class="el-icon-milk-tea"></i>
+              <span slot="title">好友</span>
+            </el-menu-item>
+            <el-submenu index="1-4">
+              <span slot="title"> <i class="el-icon-s-cooperation"></i>群组 </span>
+              <el-menu-item index="1-4-1">内部群组</el-menu-item>
+              <el-menu-item index="1-4-1">外部群组</el-menu-item>
+            </el-submenu>
+          </el-submenu>
+          <el-menu-item index="3" disabled>
+            <i class="el-icon-document"></i>
+            <span slot="title">导航三</span>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <i class="el-icon-setting"></i>
+            <span slot="title">导航四</span>
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      isCollapse: false,
+      isRouter: true,
+      activeIndex2: "1",
+    };
+  },
+  methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleSelect(key, keyPath) {
+      console.log(key, keyPath);
+    },
+  },
+  created() {
+    if (!localStorage.getItem("token")) {
+      alert("请先登陆");
+      this.$router.push("/login");
+    }
+  },
+};
+</script>
+
+<style>
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
+</style>
