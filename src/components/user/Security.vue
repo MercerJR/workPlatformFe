@@ -10,13 +10,13 @@
       style="width: 40%"
     >
       <el-form-item label="旧密码">
-        <el-input v-model="changePasswordObject.oldPassword"></el-input>
+        <el-input v-model="changePasswordObject.oldPassword" show-password></el-input>
       </el-form-item>
       <el-form-item label="新密码">
-        <el-input v-model="changePasswordObject.newPassword"></el-input>
+        <el-input v-model="changePasswordObject.newPassword" show-password></el-input>
       </el-form-item>
       <el-form-item label="重复新密码">
-        <el-input v-model="changePasswordObject.newPasswordAgain"></el-input>
+        <el-input v-model="changePasswordObject.newPasswordAgain" show-password></el-input>
       </el-form-item>
     </el-form>
     <br />
@@ -35,6 +35,7 @@ export default {
         newPassword: "",
         newPasswordAgain: "",
       },
+      token:"",
     };
   },
   methods: {
@@ -44,7 +45,7 @@ export default {
       this.$axios
         .post(url, jsonParam,{
           headers: {
-            "token": this.constant.token,
+            "token": this.token,
             "content-type": "application/json",
           },
         })
@@ -54,9 +55,9 @@ export default {
     },
   },
   created() {
-    this.constant.token = localStorage.getItem("token");
-    console.log(this.constant.token);
-    if (this.constant.token == null || this.constant.token == "") {
+    this.token = localStorage.getItem("token");
+    console.log(this.token);
+    if (this.token == null || this.token == "") {
       alert("您还没有登陆，请先登陆");
       this.$router.push("/login");
     }

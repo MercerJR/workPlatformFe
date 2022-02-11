@@ -2,7 +2,6 @@ export default {
     install(Vue, options) {
         Vue.prototype.constant =  {
             baseUrl: 'http://localhost:8090',
-            token: "",
         };
         // Vue.prototype.getTitle = {
         //     title: '',

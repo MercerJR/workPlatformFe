@@ -48,6 +48,7 @@ export default {
         livePlace: "",
         hometown: "",
       },
+      token:""
     };
   },
   methods: {
@@ -56,7 +57,7 @@ export default {
       this.$axios
         .get(url, {
           headers: {
-            "token": this.constant.token,
+            "token": this.token,
             "content-type": "application/json",
           },
         })
@@ -79,7 +80,7 @@ export default {
       this.$axios
         .post(url, jsonParam, {
           headers: {
-            token: this.constant.token,
+            "token": this.token,
             "content-type": "application/json",
           },
         })
@@ -89,9 +90,9 @@ export default {
     },
   },
   created() {
-    this.constant.token = localStorage.getItem("token");
-    console.log(this.constant.token)
-    if (this.constant.token == null || this.constant.token == "") {
+    this.token = localStorage.getItem("token");
+    console.log(this.token)
+    if (this.token == null || this.token == "") {
       alert("您还没有登陆，请先登陆");
       this.$router.push("/login");
     }
