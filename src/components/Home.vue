@@ -14,6 +14,7 @@
         <el-menu-item index="/home">MERCER'S WORK PLATFORM</el-menu-item>
         <el-menu-item index="3">消息中心</el-menu-item>
         <el-menu-item index="/home/myself" class="myself">我的</el-menu-item>
+        <el-menu-item @click="cancellation"><i class="el-icon-switch-button"></i></el-menu-item>
       </el-menu>
     </div>
     <el-container>
@@ -93,6 +94,10 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
+    cancellation(){
+      localStorage.removeItem("token");
+      this.$router.push("/login");
+    }
   },
   created() {
     if (!localStorage.getItem("token")) {

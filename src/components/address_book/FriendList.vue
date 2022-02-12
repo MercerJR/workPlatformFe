@@ -27,15 +27,11 @@
               </el-col>
               <el-col :span="16">
                 <div class="info">
-                  <span>性别：{{ friendInfo.gender }}</span>
-                  <br />
-                  <span>爱好：{{ friendInfo.hobby }}</span>
-                  <br />
-                  <span>居住地：{{ friendInfo.livePlace }}</span>
-                  <br />
-                  <span>家乡：{{ friendInfo.hometown }}</span>
-                  <br />
-                  <span>个人描述：{{ friendInfo.describe }}</span>
+                  <span v-show="checkEmpty(friendInfo.gender) ? false : true">性别：{{ friendInfo.gender }}<br /></span>
+                  <span v-show="checkEmpty(friendInfo.hobby) ? false : true">爱好：{{ friendInfo.hobby }}<br /></span>
+                  <span v-show="checkEmpty(friendInfo.livePlace) ? false : true">居住地：{{ friendInfo.livePlace }}<br /></span>
+                  <span v-show="checkEmpty(friendInfo.hometown) ? false : true">家乡：{{ friendInfo.hometown }}<br /></span>
+                  <span v-show="checkEmpty(friendInfo.describe) ? false : true">个人描述：{{ friendInfo.describe }}</span>
                 </div>
               </el-col>
             </el-row>
@@ -62,6 +58,10 @@ export default {
         name: "MercerJR9",
         icon: "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
         describe: "heiheihei",
+        gender: "",
+        hobby: "",
+        livePlace: "",
+        hometown: "",
       },
       token: "",
       friendInfoShow: false,
@@ -76,7 +76,7 @@ export default {
       this.$axios
         .get(url, {
           headers: {
-            token: this.token,
+            "token": this.token,
             "content-type": "application/json",
           },
         })
@@ -93,12 +93,41 @@ export default {
           }
         });
     },
-    showFriendInfo() {
+    showFriendInfo(row) {
+      var url = this.constant.baseUrl + "/friend/show_friend_info/" + row.friendId;
+      this.$axios
+        .get(url, {
+          headers: {
+            "token": this.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            console.log(res.data);
+            this.friendInfo = res.data.data;
+            //临时给头像赋默认值
+            this.friendInfo.icon = "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
+          } else {
+            alert(res.data.message);
+            console.log(res.data);
+            if (res.data.code == 2) {
+              this.$router.push("/login");
+            }
+          }
+        });
+
       this.friendInfoShow = true;
     },
     hideFriendInfo(){
       this.friendInfoShow = false;
     },
+    chat(){
+
+    },
+    checkEmpty(property){
+      return property == null || property == "";
+    }
   },
   created() {
     this.token = localStorage.getItem("token");
