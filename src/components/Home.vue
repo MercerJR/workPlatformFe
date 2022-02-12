@@ -52,11 +52,10 @@
               <i class="el-icon-milk-tea"></i>
               <span slot="title">好友</span>
             </el-menu-item>
-            <el-submenu index="1-4">
-              <span slot="title"> <i class="el-icon-s-cooperation"></i>群组 </span>
-              <el-menu-item index="1-4-1">内部群组</el-menu-item>
-              <el-menu-item index="1-4-1">外部群组</el-menu-item>
-            </el-submenu>
+            <el-menu-item index="/home/group_list">
+              <i class="el-icon-s-cooperation"></i>
+              <span slot="title">群组</span>
+            </el-menu-item>
           </el-submenu>
           <el-menu-item index="3" disabled>
             <i class="el-icon-document"></i>
@@ -100,10 +99,7 @@ export default {
     }
   },
   created() {
-    if (!localStorage.getItem("token")) {
-      alert("请先登陆");
-      this.$router.push("/login");
-    }
+    this.checkToken();
   },
 };
 </script>

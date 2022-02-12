@@ -68,9 +68,7 @@ export default {
           } else {
             alert(res.data.message);
             console.log(res.data);
-            if (res.data.code == 2) {
-              this.$router.push("/login");
-            }
+            this.handleNotLogin(res.data.code);
           }
         });
     },
@@ -86,16 +84,14 @@ export default {
         })
         .then((res) => {
           alert(res.data.message);
+          this.handleNotLogin(res.data.code);
         });
     },
   },
   created() {
+    this.checkToken();
     this.token = localStorage.getItem("token");
     console.log(this.token)
-    if (this.token == null || this.token == "") {
-      alert("您还没有登陆，请先登陆");
-      this.$router.push("/login");
-    }
     this.getUserInfo();
   },
 };
