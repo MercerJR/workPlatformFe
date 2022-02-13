@@ -8,6 +8,7 @@ import Myself from '@/components/user/Myself'
 import UserInfo from '@/components/user/UserInfo'
 import Security from '@/components/user/Security'
 import FriendList from '@/components/address_book/FriendList'
+import GroupList from '@/components/address_book/GroupList'
 
 Vue.use(Router)
 
@@ -27,6 +28,7 @@ export default new Router({
           ]
         },
         { path: 'friend_list', name: 'FriendList', component: FriendList },
+        { path: 'group_list', name: 'GroupList', component: GroupList },
       ]
     },
   ]

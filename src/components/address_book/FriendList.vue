@@ -9,7 +9,7 @@
           @cell-click="showFriendInfo"
           @cell-dbclick="chat"
         >
-          <el-table-column prop="name" label="昵称" width="180">
+          <el-table-column prop="name" label="好友列表" width="180">
           </el-table-column>
         </el-table>
       </div>
@@ -55,9 +55,9 @@ export default {
     return {
       friends: [],
       friendInfo: {
-        name: "MercerJR9",
-        icon: "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png",
-        describe: "heiheihei",
+        name: "",
+        icon: "",
+        describe: "",
         gender: "",
         hobby: "",
         livePlace: "",
