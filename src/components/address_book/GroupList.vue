@@ -68,7 +68,7 @@
                 :default-sort="{ prop: 'nickname', order: 'descending' }"
                 @cell-dbclick="chat"
               >
-                <el-table-column prop="nickname" label="成员列表" width="180">
+                <el-table-column prop="nickname" label="成员列表" width="180" :sortable="true" :sort-by="sortByArray">
                 </el-table-column>
                 <el-table-column prop="role" label="" width="100">
                   <template slot-scope="scope">
@@ -106,6 +106,7 @@ export default {
       },
       groupMemberList: [],
       groupInfoShow: false,
+      sortByArray:["roleId","nickname"],
       token: "",
     };
   },
