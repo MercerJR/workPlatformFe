@@ -7,7 +7,7 @@
             :data="innerGroupList"
             style="width: 100%"
             :default-sort="{ prop: 'groupName', order: 'ascending' }"
-            @cell-click="showGroupInfo"
+            @cell-click="getGroupInfoAndMemberList"
             @cell-dbclick="chat"
           >
             <el-table-column prop="groupName" label="工作室群聊" width="180">
@@ -21,7 +21,7 @@
             :data="outsideGroupList"
             style="width: 100%"
             :default-sort="{ prop: 'groupName', order: 'ascending' }"
-            @cell-click="showGroupInfo"
+            @cell-click="getGroupInfoAndMemberList"
             @cell-dbclick="chat"
           >
             <el-table-column prop="groupName" label="外部群聊" width="180">
@@ -30,6 +30,7 @@
         </div>
       </div>
     </el-col>
+
     <el-col :span="10">
       <div v-show="groupInfoShow">
         <el-card class="box-card">
@@ -42,6 +43,7 @@
               class="backHeader"
             >
             </el-page-header>
+
             <el-row>
               <el-col :span="8">
                 <div>
@@ -59,12 +61,44 @@
                     type="text"
                     v-show="manageGroupButtonShow"
                     style="color: #67c23a"
+                    @click="showUpdateGroupInfo"
                     >管理群聊信息</el-button
                   >
                 </div>
               </el-col>
             </el-row>
+
+            <div v-show="updateGroupInfoShow">
+              <div style="margin: 0px"></div>
+              <el-form
+                label-position="top"
+                label-width="80px"
+                :model="updateGroupInfoObject"
+                style="width: 40%"
+              >
+                <el-form-item label="群聊名称">
+                  <el-input
+                    v-model="updateGroupInfoObject.groupName"
+                    :placeholder="groupInfo.groupName"
+                  ></el-input>
+                </el-form-item>
+                <el-form-item label="群聊分类">
+                  <el-input
+                    v-model="updateGroupInfoObject.classify"
+                    :placeholder="groupInfo.classify"
+                  ></el-input>
+                </el-form-item>
+              </el-form>
+              <br />
+              <el-button type="success" @click="updateGroupInfo" plain
+                >更新</el-button
+              >
+              <el-button type="text" @click="hideUpdateGroupInfo"
+                >收起</el-button
+              >
+            </div>
           </div>
+
           <div class="text item">
             <div class="bottom clearfix">
               <!-- <el-button type="primary">发消息</el-button> -->
@@ -109,18 +143,25 @@ export default {
       innerGroupList: [],
       outsideGroupList: [],
       groupInfo: {
+        groupId:0,
         icon: "",
-        name: "",
+        groupName: "",
         type: "",
         classify: "",
         peopleNumber: 0,
         currentUserRoleId: 0,
         createTime: "",
       },
+      updateGroupInfoObject: {
+        groupId:0,
+        groupName: "",
+        classify: "",
+      },
       groupMemberList: [],
       groupInfoShow: false,
       sortByArray: ["roleId", "nickname"],
       manageGroupButtonShow: false,
+      updateGroupInfoShow: false,
       token: "",
     };
   },
@@ -149,9 +190,14 @@ export default {
           }
         });
     },
-    showGroupInfo(row) {
+    getGroupInfoAndMemberList(row) {
+      this.getGroupInfo(row.groupId);
+      this.getMemberList(row.groupId);
+      this.groupInfoShow = true;
+    },
+    getGroupInfo(groupId) {
       //获取群聊信息
-      var url = this.constant.baseUrl + "/group/show_group_info/" + row.groupId;
+      var url = this.constant.baseUrl + "/group/show_group_info/" + groupId;
       this.$axios
         .get(url, {
           headers: {
@@ -166,18 +212,21 @@ export default {
             //临时给头像赋默认值
             this.groupInfo.icon =
               "https://tse1-mm.cn.bing.net/th/id/R-C.911e513170c60b435468bdcdd0fe50ee?rik=RQx88HIuKZ2CCg&riu=http%3a%2f%2fup.deskcity.org%2fpic%2f86%2fe3%2fb4%2f86e3b4d4048b6b9289da2b7c41e2e698.jpg&ehk=KR6xnPQsA9xGVmw2iap6KY%2fswRTf8qkjBAPqH0bBSq8%3d&risl=&pid=ImgRaw&r=0-";
+            //只有群主能看到更新群聊信息的按钮
             this.manageGroupButtonShow =
               this.groupInfo.currentUserRoleId == 2 ? true : false;
+            //保证切换群聊信息的时候不会展示更新信息的列表
+            this.updateGroupInfoShow = false;
           } else {
             alert(res.data.message);
             console.log(res.data);
             this.handleNotLogin(res.data.code);
           }
         });
-
+    },
+    getMemberList(groupId) {
       //获取群聊用户列表
-      var url =
-        this.constant.baseUrl + "/group/show_member_list/" + row.groupId;
+      var url = this.constant.baseUrl + "/group/show_member_list/" + groupId;
       this.$axios
         .get(url, {
           headers: {
@@ -195,8 +244,6 @@ export default {
             this.handleNotLogin(res.data.code);
           }
         });
-
-      this.groupInfoShow = true;
     },
     chat() {},
     checkEmpty(property) {
@@ -210,6 +257,31 @@ export default {
         return "warning";
       }
       return tagProp == "管理员" ? "success" : "info";
+    },
+    showUpdateGroupInfo() {
+      this.updateGroupInfoShow = true;
+    },
+    hideUpdateGroupInfo() {
+      this.updateGroupInfoShow = false;
+    },
+    updateGroupInfo: function () {
+      var url = this.constant.baseUrl + "/group/update_group_info";
+      this.updateGroupInfoObject.groupId = this.groupInfo.groupId;
+      var jsonParam = JSON.stringify(this.updateGroupInfoObject);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            "token": this.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          alert(res.data.message);
+          console.log(res.data);
+          this.handleNotLogin(res.data.code);
+          this.hideUpdateGroupInfo();
+          this.getGroupInfo(this.groupInfo.groupId);
+        });
     },
   },
   created() {
