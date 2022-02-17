@@ -55,6 +55,12 @@
                     >分类：{{ groupInfo.classify }}<br
                   /></span>
                   <span>创建时间：{{ groupInfo.createTime }}<br /></span>
+                  <el-button
+                    type="text"
+                    v-show="manageGroupButtonShow"
+                    style="color: #67c23a"
+                    >管理群聊信息</el-button
+                  >
                 </div>
               </el-col>
             </el-row>
@@ -68,7 +74,13 @@
                 :default-sort="{ prop: 'nickname', order: 'descending' }"
                 @cell-dbclick="chat"
               >
-                <el-table-column prop="nickname" label="成员列表" width="180" :sortable="true" :sort-by="sortByArray">
+                <el-table-column
+                  prop="nickname"
+                  label="成员列表"
+                  width="180"
+                  :sortable="true"
+                  :sort-by="sortByArray"
+                >
                 </el-table-column>
                 <el-table-column prop="role" label="" width="100">
                   <template slot-scope="scope">
@@ -97,16 +109,18 @@ export default {
       innerGroupList: [],
       outsideGroupList: [],
       groupInfo: {
-        icon: "https://tse1-mm.cn.bing.net/th/id/R-C.911e513170c60b435468bdcdd0fe50ee?rik=RQx88HIuKZ2CCg&riu=http%3a%2f%2fup.deskcity.org%2fpic%2f86%2fe3%2fb4%2f86e3b4d4048b6b9289da2b7c41e2e698.jpg&ehk=KR6xnPQsA9xGVmw2iap6KY%2fswRTf8qkjBAPqH0bBSq8%3d&risl=&pid=ImgRaw&r=0-",
-        name: "北伦敦酋长",
-        type: "外部群聊",
-        classify: "足球",
+        icon: "",
+        name: "",
+        type: "",
+        classify: "",
         peopleNumber: 0,
-        createTime: "2022-01-06",
+        currentUserRoleId: 0,
+        createTime: "",
       },
       groupMemberList: [],
       groupInfoShow: false,
-      sortByArray:["roleId","nickname"],
+      sortByArray: ["roleId", "nickname"],
+      manageGroupButtonShow: false,
       token: "",
     };
   },
@@ -136,6 +150,7 @@ export default {
         });
     },
     showGroupInfo(row) {
+      //获取群聊信息
       var url = this.constant.baseUrl + "/group/show_group_info/" + row.groupId;
       this.$axios
         .get(url, {
@@ -151,6 +166,8 @@ export default {
             //临时给头像赋默认值
             this.groupInfo.icon =
               "https://tse1-mm.cn.bing.net/th/id/R-C.911e513170c60b435468bdcdd0fe50ee?rik=RQx88HIuKZ2CCg&riu=http%3a%2f%2fup.deskcity.org%2fpic%2f86%2fe3%2fb4%2f86e3b4d4048b6b9289da2b7c41e2e698.jpg&ehk=KR6xnPQsA9xGVmw2iap6KY%2fswRTf8qkjBAPqH0bBSq8%3d&risl=&pid=ImgRaw&r=0-";
+            this.manageGroupButtonShow =
+              this.groupInfo.currentUserRoleId == 2 ? true : false;
           } else {
             alert(res.data.message);
             console.log(res.data);
@@ -158,6 +175,7 @@ export default {
           }
         });
 
+      //获取群聊用户列表
       var url =
         this.constant.baseUrl + "/group/show_member_list/" + row.groupId;
       this.$axios

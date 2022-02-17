@@ -54,7 +54,11 @@
           <div class="text item">
             <div class="bottom clearfix">
               <el-button type="primary">发消息</el-button>
-              <el-button type="text" style="color:#F56C6C;" @click="centerDialogVisible = true"
+              <el-button
+                type="text"
+                style="color: #f56c6c"
+                class="deleteButton"
+                @click="centerDialogVisible = true"
                 >删除好友</el-button
               >
               <el-dialog
@@ -63,12 +67,18 @@
                 width="30%"
                 center
               >
-                <span>将"{{ friendInfo.name }}"联系人删除并同时将你从对方的好友列表中移除?</span>
+                <span
+                  >将"{{
+                    friendInfo.name
+                  }}"联系人删除并同时将你从对方的好友列表中移除?</span
+                >
                 <span slot="footer" class="dialog-footer">
                   <el-button @click="centerDialogVisible = false"
                     >取 消</el-button
                   >
-                  <el-button type="primary" @click="deleteFriend(friendInfo.friendId)"
+                  <el-button
+                    type="primary"
+                    @click="deleteFriend(friendInfo.friendId)"
                     >确 定</el-button
                   >
                 </span>
@@ -214,6 +224,10 @@ export default {
 .bottom {
   margin-top: 13px;
   line-height: 12px;
+}
+.deleteButton {
+  margin-top: 13px;
+  float: right;
 }
 .image {
   width: 80%;
