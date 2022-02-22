@@ -106,6 +106,7 @@
                 :data="groupMemberList"
                 style="width: 100%"
                 :default-sort="{ prop: 'nickname', order: 'descending' }"
+                @cell-click="openDialog"
                 @cell-dbclick="chat"
               >
                 <el-table-column
@@ -127,6 +128,32 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <el-dialog
+                title="成员管理"
+                :visible.sync="managerMemberDialogShow"
+                width="30%"
+              >
+                <div v-show="groupInfo.currentUserRoleId == 2 ? true : false">
+                  <span>设为管理员</span>
+                  <el-switch
+                    v-model="selectedMemberInfo.roleId"
+                    active-color="#13ce66"
+                    inactive-color="#DCDFE6"
+                    :active-value="1"
+                    :inactive-value="0"
+                    @change="updateAdmin"
+                  >
+                  </el-switch>
+                </div>
+                <el-button type="danger" style="margin-top:25px;" @click="deleteFriend">删除成员</el-button>
+                <span slot="footer" class="dialog-footer">
+                  <el-button
+                    type="primary"
+                    @click="managerMemberDialogShow = false"
+                    >关闭</el-button
+                  >
+                </span>
+              </el-dialog>
             </div>
           </div>
         </el-card>
@@ -143,7 +170,7 @@ export default {
       innerGroupList: [],
       outsideGroupList: [],
       groupInfo: {
-        groupId:0,
+        groupId: 0,
         icon: "",
         groupName: "",
         type: "",
@@ -153,7 +180,7 @@ export default {
         createTime: "",
       },
       updateGroupInfoObject: {
-        groupId:0,
+        groupId: 0,
         groupName: "",
         classify: "",
       },
@@ -162,6 +189,14 @@ export default {
       sortByArray: ["roleId", "nickname"],
       manageGroupButtonShow: false,
       updateGroupInfoShow: false,
+      managerMemberDialogShow: false,
+      selectedMemberInfo: {
+        userId: 0,
+        nickname: "",
+        name: "",
+        roleId: 0,
+        role: "",
+      },
       token: "",
     };
   },
@@ -271,7 +306,7 @@ export default {
       this.$axios
         .post(url, jsonParam, {
           headers: {
-            "token": this.token,
+            token: this.token,
             "content-type": "application/json",
           },
         })
@@ -283,6 +318,39 @@ export default {
           this.getGroupInfo(this.groupInfo.groupId);
         });
     },
+    updateAdmin() {
+      console.log(this.selectedMemberInfo.roleId);
+      var url = this.constant.baseUrl + "/group/update_role";
+      var updateAdminRequest = {
+        memberId: this.selectedMemberInfo.userId,
+        groupId: this.groupInfo.groupId,
+        roleId: this.selectedMemberInfo.roleId,
+      };
+      var jsonParam = JSON.stringify(updateAdminRequest);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          console.log(res.data);
+          this.handleNotLogin(res.data.code);
+        });
+    },
+    openDialog(row) {
+      if (this.groupInfo.currentUserRoleId == 0 || row.roleId == 2) {
+        return;
+      }
+      this.selectedMemberInfo = row;
+      console.log(this.selectedMemberInfo);
+      this.managerMemberDialogShow = true;
+    },
+    deleteFriend(){
+      console.log("删除成员");
+    }
   },
   created() {
     this.checkToken();
