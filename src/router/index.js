@@ -9,6 +9,7 @@ import UserInfo from '@/components/user/UserInfo'
 import Security from '@/components/user/Security'
 import FriendList from '@/components/address_book/FriendList'
 import GroupList from '@/components/address_book/GroupList'
+import NewFriend from '@/components/address_book/NewFriend'
 
 Vue.use(Router)
 
@@ -29,6 +30,7 @@ export default new Router({
         },
         { path: 'friend_list', name: 'FriendList', component: FriendList },
         { path: 'group_list', name: 'GroupList', component: GroupList },
+        { path: 'new_friend', name: 'NewFriend', component: NewFriend },
       ]
     },
   ]

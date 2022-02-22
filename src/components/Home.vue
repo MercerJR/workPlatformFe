@@ -40,7 +40,7 @@
               <i class="el-icon-notebook-2"></i>
               <span slot="title">通讯录</span>
             </template>
-            <el-menu-item index="1-1">
+            <el-menu-item index="/home/new_friend">
               <i class="el-icon-circle-plus"></i>
               <span slot="title">新的联系人</span>
             </el-menu-item>
