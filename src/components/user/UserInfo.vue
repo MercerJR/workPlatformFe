@@ -48,7 +48,7 @@ export default {
         livePlace: "",
         hometown: "",
       },
-      token:""
+      token: "",
     };
   },
   methods: {
@@ -57,7 +57,7 @@ export default {
       this.$axios
         .get(url, {
           headers: {
-            "token": this.token,
+            token: this.token,
             "content-type": "application/json",
           },
         })
@@ -66,7 +66,7 @@ export default {
             console.log(res.data);
             this.userInfo = res.data.data;
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
             console.log(res.data);
             this.handleNotLogin(res.data.code);
           }
@@ -78,12 +78,12 @@ export default {
       this.$axios
         .post(url, jsonParam, {
           headers: {
-            "token": this.token,
+            token: this.token,
             "content-type": "application/json",
           },
         })
         .then((res) => {
-          alert(res.data.message);
+          this.alertMessage(res);
           this.handleNotLogin(res.data.code);
         });
     },
@@ -91,7 +91,7 @@ export default {
   created() {
     this.checkToken();
     this.token = localStorage.getItem("token");
-    console.log(this.token)
+    console.log(this.token);
     this.getUserInfo();
   },
 };

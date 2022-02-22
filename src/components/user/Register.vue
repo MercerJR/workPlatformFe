@@ -29,11 +29,11 @@ export default {
   name: "Register",
   data() {
     return {
-        labelPosition: "left",
-        registerRequest:{
-            phoneNumber:"",
-            password:""
-        }
+      labelPosition: "left",
+      registerRequest: {
+        phoneNumber: "",
+        password: "",
+      },
     };
   },
   methods: {
@@ -43,7 +43,7 @@ export default {
       var url = this.constant.baseUrl + "/user/register";
       console.log(url);
       this.$axios
-        .post(url, jsonParam,{
+        .post(url, jsonParam, {
           headers: {
             "content-type": "application/json",
           },
@@ -53,11 +53,11 @@ export default {
             //切换路由
             this.$router.push("/login");
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
           }
         });
     },
-  }
+  },
 };
 </script>
 

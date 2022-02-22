@@ -50,7 +50,7 @@ export default {
           },
         })
         .then((res) => {
-          alert(res.data.message);
+          this.alertMessage(res);
           this.handleNotLogin(res.data.code);
         });
     },

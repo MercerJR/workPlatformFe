@@ -198,7 +198,7 @@ export default {
               this.userResultShow = false;
             }
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
             console.log(res.data);
             this.handleNotLogin(res.data.code);
           }

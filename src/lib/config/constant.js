@@ -5,7 +5,10 @@ export default {
         };
         Vue.prototype.checkToken = function () {
             if (!localStorage.getItem("token")) {
-                alert("请先登陆");
+                this.$message({
+                    type: "error",
+                    message: res.data.message,
+                });
                 this.$router.push("/login");
             }
         };
@@ -13,7 +16,15 @@ export default {
             if (code == 2) {
                 this.$router.push("/login");
             }
+        };
+        Vue.prototype.alertMessage = function (res) {
+            this.$message({
+                type: res.data.code == 0 ? "success" : "error",
+                message: res.data.message,
+            });
         }
+
+
         // Vue.prototype.getTitle = {
         //     title: '',
         //     isBack: true,

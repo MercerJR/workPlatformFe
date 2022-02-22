@@ -130,7 +130,7 @@ export default {
             console.log(res.data);
             this.friends = res.data.data;
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
             console.log(res.data);
             this.handleNotLogin(res.data.code);
           }
@@ -154,7 +154,7 @@ export default {
             this.friendInfo.icon =
               "https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png";
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
             console.log(res.data);
             this.handleNotLogin(res.data.code);
           }
@@ -183,7 +183,7 @@ export default {
           },
         })
         .then((res) => {
-          alert(res.data.message);
+          this.alertMessage(res);
           this.handleNotLogin(res.data.code);
           //隐藏已删除的好友信息，并刷新好友列表
           this.friendInfoShow = false;

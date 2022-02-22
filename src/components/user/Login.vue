@@ -21,9 +21,11 @@
     <div id="button">
       <el-button type="primary" @click="login" round>登陆</el-button>
     </div>
-    <br>
+    <br />
     <div id="href">
-      <el-link type="primary" :href="'#/register'">还没有账户？点击这里注册</el-link>
+      <el-link type="primary" :href="'#/register'"
+        >还没有账户？点击这里注册</el-link
+      >
     </div>
   </div>
 </template>
@@ -47,7 +49,7 @@ export default {
       var url = this.constant.baseUrl + "/user/login";
       console.log(url);
       this.$axios
-        .post(url, jsonParam,{
+        .post(url, jsonParam, {
           headers: {
             "content-type": "application/json",
           },
@@ -61,7 +63,7 @@ export default {
             //切换路由
             this.$router.push("/home");
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
           }
         });
     },
@@ -70,7 +72,7 @@ export default {
 </script>
 
 <style>
-#login{
+#login {
   text-align: center;
   margin-top: 100px;
 }

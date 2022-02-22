@@ -184,7 +184,7 @@ export default {
               this.outsideGroupList = res.data.data;
             }
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
             console.log(res.data);
             this.handleNotLogin(res.data.code);
           }
@@ -218,7 +218,7 @@ export default {
             //保证切换群聊信息的时候不会展示更新信息的列表
             this.updateGroupInfoShow = false;
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
             console.log(res.data);
             this.handleNotLogin(res.data.code);
           }
@@ -239,7 +239,7 @@ export default {
             console.log(res.data);
             this.groupMemberList = res.data.data;
           } else {
-            alert(res.data.message);
+            this.alertMessage(res);
             console.log(res.data);
             this.handleNotLogin(res.data.code);
           }
@@ -276,7 +276,7 @@ export default {
           },
         })
         .then((res) => {
-          alert(res.data.message);
+          this.alertMessage(res);
           console.log(res.data);
           this.handleNotLogin(res.data.code);
           this.hideUpdateGroupInfo();
