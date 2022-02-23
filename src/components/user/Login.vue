@@ -58,8 +58,9 @@ export default {
           if (res.data.code == 0) {
             console.log(res.data.data);
             //存储用户token
-            var token = res.data.data;
-            localStorage.setItem("token", token);
+            localStorage.setItem("token", res.data.data.token);
+            localStorage.setItem("userId",res.data.data.userId);
+            localStorage.setItem("name",res.data.data.name);
             //切换路由
             this.$router.push("/home");
           } else {

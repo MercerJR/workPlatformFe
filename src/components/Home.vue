@@ -13,7 +13,7 @@
       >
         <el-menu-item index="/home">MERCER'S WORK PLATFORM</el-menu-item>
         <el-menu-item index="3">消息中心</el-menu-item>
-        <el-menu-item index="/home/myself" class="myself">我的</el-menu-item>
+        <el-menu-item index="/home/myself" class="myself">{{ userBaseInfo.name }}</el-menu-item>
         <el-menu-item @click="cancellation"><i class="el-icon-switch-button"></i></el-menu-item>
       </el-menu>
     </div>
@@ -81,6 +81,10 @@ export default {
       isCollapse: false,
       isRouter: true,
       activeIndex2: "1",
+      userBaseInfo:{
+        userId:0,
+        name:"",
+      }
     };
   },
   methods: {
@@ -100,6 +104,8 @@ export default {
   },
   created() {
     this.checkToken();
+    this.userBaseInfo.userId = localStorage.getItem("userId");
+    this.userBaseInfo.name = localStorage.getItem("name");
   },
 };
 </script>

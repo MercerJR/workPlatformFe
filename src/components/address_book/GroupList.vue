@@ -338,10 +338,14 @@ export default {
           this.alertMessage(res);
           console.log(res.data);
           this.handleNotLogin(res.data.code);
+          if(res.data.code == 0){
+            this.getMemberList(this.groupInfo.groupId);
+          }
         });
     },
     openDialog(row) {
-      if (this.groupInfo.currentUserRoleId == 0 || row.roleId == 2) {
+      //如果当前用户的角色是成员，或被点击的用户是群主，或被点击的用户是自己，都将不会打开dialog
+      if (this.groupInfo.currentUserRoleId == 0 || row.roleId == 2 || row.userId == localStorage.getItem("userId")) {
         return;
       }
       this.selectedMemberInfo = row;
