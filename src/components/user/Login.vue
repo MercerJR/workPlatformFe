@@ -56,7 +56,7 @@ export default {
         })
         .then((res) => {
           if (res.data.code == 0) {
-            console.log(res.data.data);
+            console.log(res.data);
             //存储用户token
             localStorage.setItem("token", res.data.data.token);
             localStorage.setItem("userId",res.data.data.userId);

@@ -7,7 +7,7 @@ export default {
             if (!localStorage.getItem("token")) {
                 this.$message({
                     type: "error",
-                    message: res.data.message,
+                    message: "请先登陆",
                 });
                 this.$router.push("/login");
             }
