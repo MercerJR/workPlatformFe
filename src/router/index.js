@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Home from '@/components/Home'
 import Login from '@/components/user/Login'
 import Register from '@/components/user/Register'
@@ -10,6 +9,8 @@ import Security from '@/components/user/Security'
 import FriendList from '@/components/address_book/FriendList'
 import GroupList from '@/components/address_book/GroupList'
 import NewFriend from '@/components/address_book/NewFriend'
+import BackHome from '@/components/BackHome'
+import BackHomeContent from '@/components/back/BackHomeContent'
 
 Vue.use(Router)
 
@@ -31,6 +32,12 @@ export default new Router({
         { path: 'friend_list', name: 'FriendList', component: FriendList },
         { path: 'group_list', name: 'GroupList', component: GroupList },
         { path: 'new_friend', name: 'NewFriend', component: NewFriend },
+      ]
+    },
+    {
+      path: '/back_home', name: 'backHome', component: BackHome,
+      children: [
+        { path: 'back_home_content', name: 'BackHomeContent', component: BackHomeContent }
       ]
     },
   ]
