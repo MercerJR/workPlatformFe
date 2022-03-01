@@ -35,7 +35,6 @@ export default {
         newPassword: "",
         newPasswordAgain: "",
       },
-      token:"",
     };
   },
   methods: {
@@ -45,7 +44,7 @@ export default {
       this.$axios
         .post(url, jsonParam,{
           headers: {
-            "token": this.token,
+            "token": this.$root.token,
             "content-type": "application/json",
           },
         })
@@ -57,8 +56,7 @@ export default {
   },
   created() {
     this.checkToken();
-    this.token = localStorage.getItem("token");
-    console.log(this.token);
+    this.$root.token = localStorage.getItem("token");
   },
 };
 </script>

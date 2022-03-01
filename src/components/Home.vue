@@ -14,20 +14,15 @@
         <el-menu-item index="/home">MERCER'S WORK PLATFORM</el-menu-item>
         <el-submenu index="2">
           <template slot="title">{{
-            currentStudio.studioName == "" ? "工作室" : currentStudio.studioName
+            this.$root.currentStudioBaseInfo.studioName == ""
+              ? "工作室"
+              : this.$root.currentStudioBaseInfo.studioName
           }}</template>
           <el-menu-item
             v-for="item in studioList"
             :indexPath="item"
             v-bind:key="item.studioId"
-            :index="
-              'shiftStudio/' +
-              item.studioId +
-              '/' +
-              item.studioName +
-              '/' +
-              item.studioAbbreviation
-            "
+            :index="'shiftStudio/' + item.studioId"
           >
             {{ item.studioName }}
           </el-menu-item>
@@ -117,12 +112,6 @@ export default {
           studioAbbreviation: "",
         },
       ],
-      currentStudio: {
-        studioId: 0,
-        studioName: "",
-        studioAbbreviation: "",
-      },
-      token: "",
     };
   },
   methods: {
@@ -136,12 +125,8 @@ export default {
       var prefix = key == null ? key : key.split("/")[0];
       //如果index前缀是shiftStudio，则表示是选择工作室
       if (prefix == "shiftStudio") {
-        var studioBaseInfo = {
-          studioId:key.split("/")[1],
-          studioName:key.split("/")[2],
-          studioAbbreviation:key.split("/")[3],
-        }
-        this.shiftStudio(studioBaseInfo);
+        var studioId = key.split("/")[1];
+        this.shiftStudio(studioId);
         return;
       }
       this.$router.push(key);
@@ -152,14 +137,11 @@ export default {
       this.$router.push("/login");
     },
     getStudioList() {
-      if (localStorage.getItem("currentStudio")) {
-        this.currentStudio = localStorage.getItem("currentStudio");
-      }
       var url = this.constant.baseUrl + "/studio/list/";
       this.$axios
         .get(url, {
           headers: {
-            token: this.token,
+            token: this.$root.token,
             "content-type": "application/json",
           },
         })
@@ -167,8 +149,9 @@ export default {
           if (res.data.code == 0) {
             console.log(res.data);
             this.studioList = res.data.data.studioList;
-            if(res.data.data.currentStudioBaseInfo != null){
-              this.currentStudio = res.data.data.currentStudioBaseInfo;
+            if (res.data.data.currentStudioBaseInfo != null) {
+              this.$root.currentStudioBaseInfo =
+                res.data.data.currentStudioBaseInfo;
             }
           } else {
             this.alertMessage(res);
@@ -177,33 +160,10 @@ export default {
           }
         });
     },
-    shiftStudio(studioBaseInfo) {
-      console.log(studioBaseInfo);
-      this.currentStudio = studioBaseInfo;
-      //在后台记录正在使用的工作室
-      this.recordCurrentStudio();
-      //切换后刷新页面
-      location.reload();
-    },
-    recordCurrentStudio(){
-      var url = this.constant.baseUrl + "/studio/record_current";
-      var jsonParam = JSON.stringify(this.currentStudio.studioId);
-      this.$axios
-        .post(url, jsonParam, {
-          headers: {
-            "token":this.token,
-            "content-type": "application/json",
-          },
-        })
-        .then((res) => {
-          this.alertMessage(res);
-          this.handleNotLogin(res.data.code);
-        });
-    }
   },
   created() {
     this.checkToken();
-    this.token = localStorage.getItem("token");
+    this.$root.token = localStorage.getItem("token");
     this.userBaseInfo.userId = localStorage.getItem("userId");
     this.userBaseInfo.name = localStorage.getItem("name");
     this.getStudioList();

@@ -160,7 +160,6 @@ export default {
       ],
       userResultShow: false,
       groupResultShow: false,
-      token: "",
     };
   },
   methods: {
@@ -177,11 +176,11 @@ export default {
       var select = this.checkEmpty(this.select) ? "user" : this.select;
       var url = this.constant.baseUrl + "/search/" + select + "?search_content=" + this.searchContent;
       console.log(url);
-      console.log("search方法" + this.token);
+      console.log("search方法" + this.$root.token);
       this.$axios
         .get(url, {
           headers: {
-            "token": this.token,
+            "token": this.$root.token,
             "content-type": "application/json",
           },
         })
@@ -207,8 +206,7 @@ export default {
   },
   created() {
     this.checkToken();
-    this.token = localStorage.getItem("token");
-    console.log(this.token);
+    this.$root.token = localStorage.getItem("token");
   },
 };
 </script>

@@ -61,6 +61,7 @@ export default {
             localStorage.setItem("token", res.data.data.token);
             localStorage.setItem("userId",res.data.data.userId);
             localStorage.setItem("name",res.data.data.name);
+            this.$root.token = res.data.data.token;
             //切换路由
             this.$router.push("/home");
           } else {

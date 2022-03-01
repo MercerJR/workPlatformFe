@@ -1,7 +1,7 @@
 <template>
-  <div style="margin-top: 20px; margin-left: 15px;">
+  <div style="margin-top: 20px; margin-left: 15px">
     <el-card class="box-card">
-      <div style="margin-bottom:15px">
+      <div style="margin-bottom: 15px">
         <el-row>
           <el-col :span="3">
             <h4 style="margin-top: 0px; margin-bottom: 0px">
@@ -9,7 +9,7 @@
             </h4>
           </el-col>
           <el-col :span="4">
-            <span style="font-size:10px;">4步带你快速管理工作室</span>
+            <span style="font-size: 10px">4步带你快速管理工作室</span>
           </el-col>
         </el-row>
       </div>
@@ -106,6 +106,7 @@
     </el-card>
     <el-divider></el-divider>
     <el-row>
+      <!-- 工作室信息及成员信息模块 -->
       <el-col :span="12">
         <el-card class="box-card">
           <div class="text item">
@@ -115,16 +116,25 @@
                   <el-avatar
                     shape="square"
                     :size="70"
-                    :src="squareUrl"
+                    :src="this.$root.currentStudioBaseInfo.studioIcon"
                   ></el-avatar>
                 </div>
               </el-col>
               <el-col :span="20">
                 <h4 style="margin-top: 0px; margin-bottom: 10px">
-                  XX工作室(工作室简称)
+                  {{
+                    this.$root.currentStudioBaseInfo.studioName +
+                    "(" +
+                    this.$root.currentStudioBaseInfo.studioAbbreviation +
+                    ")"
+                  }}
                 </h4>
-                <el-tag effect="dark" style="margin-right: 5px">创始人</el-tag>
-                <span style="font-size: 15px">工作室简称</span>
+                <el-tag effect="dark" style="margin-right: 5px">{{
+                  this.$root.currentStudioBaseInfo.role
+                }}</el-tag>
+                <el-tag type="success" effect="plain">
+                  {{ this.$root.currentStudioBaseInfo.departmentName }}
+                </el-tag>
               </el-col>
             </el-row>
             <el-divider></el-divider>
@@ -195,6 +205,7 @@
           </div>
         </el-card>
       </el-col>
+      <!-- 横幅和功能使用情况模块 -->
       <el-col :span="12">
         <div>
           <el-carousel
@@ -267,10 +278,13 @@
 export default {
   name: "BackHomeContent",
   data() {
-    return {
-      squareUrl:
-        "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
-    };
+    return {};
+  },
+  methods: {},
+  created() {
+    this.checkToken();
+    this.token = localStorage.getItem("token");
+    console.log(this.$root.currentStudioBaseInfo);
   },
 };
 </script>

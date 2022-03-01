@@ -37,7 +37,7 @@ export default new Router({
     {
       path: '/back_home', name: 'backHome', component: BackHome,
       children: [
-        { path: 'back_home_content', name: 'BackHomeContent', component: BackHomeContent }
+        { path: 'home_content', name: 'BackHomeContent', component: BackHomeContent }
       ]
     },
   ]

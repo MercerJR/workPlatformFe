@@ -197,7 +197,6 @@ export default {
         roleId: 0,
         role: "",
       },
-      token: "",
     };
   },
   methods: {
@@ -206,7 +205,7 @@ export default {
       this.$axios
         .get(url, {
           headers: {
-            token: this.token,
+            token: this.$root.token,
             "content-type": "application/json",
           },
         })
@@ -236,7 +235,7 @@ export default {
       this.$axios
         .get(url, {
           headers: {
-            token: this.token,
+            token: this.$root.token,
             "content-type": "application/json",
           },
         })
@@ -265,7 +264,7 @@ export default {
       this.$axios
         .get(url, {
           headers: {
-            token: this.token,
+            token: this.$root.token,
             "content-type": "application/json",
           },
         })
@@ -306,7 +305,7 @@ export default {
       this.$axios
         .post(url, jsonParam, {
           headers: {
-            token: this.token,
+            token: this.$root.token,
             "content-type": "application/json",
           },
         })
@@ -330,7 +329,7 @@ export default {
       this.$axios
         .post(url, jsonParam, {
           headers: {
-            token: this.token,
+            token: this.$root.token,
             "content-type": "application/json",
           },
         })
@@ -358,8 +357,7 @@ export default {
   },
   created() {
     this.checkToken();
-    this.token = localStorage.getItem("token");
-    console.log(this.token);
+    this.$root.token = localStorage.getItem("token");
     this.getGroupList(1);
     this.getGroupList(0);
   },
