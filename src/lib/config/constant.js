@@ -29,6 +29,8 @@ export default {
             console.log(this.$root.currentStudioBaseInfo);
             //在后台记录正在使用的工作室
             this.recordCurrentStudio();
+            //在localStorage中存储存储studioId
+            localStorage.setItem("currentStudioId",studioId);
             //切换后刷新页面
             location.reload();
         }

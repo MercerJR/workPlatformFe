@@ -119,6 +119,8 @@ export default {
             console.log(res.data);
             this.studioList = res.data.data.studioList;
             if (res.data.data.currentStudioBaseInfo != null) {
+              //在localStorage中存储存储studioId
+              localStorage.setItem("currentStudioId", res.data.data.currentStudioBaseInfo.studioId);
               this.$root.currentStudioBaseInfo =
                 res.data.data.currentStudioBaseInfo;
               this.$root.currentStudioBaseInfo.studioIcon =

@@ -138,23 +138,24 @@
               </el-col>
             </el-row>
             <el-divider></el-divider>
+            <!-- 工作室成员信息 -->
             <el-row>
               <el-col :span="8">
                 <el-button plain class="peopleButton"
                   >组织总人数<br />
-                  <h1>25</h1></el-button
+                  <h1>{{ studioPeopleInfo.studioMemberNumber }}</h1></el-button
                 >
               </el-col>
               <el-col :span="8">
                 <el-button plain class="peopleButton"
                   >未激活人数<br />
-                  <h1>2</h1></el-button
+                  <h1>{{ studioPeopleInfo.notActivatedNumber }}</h1></el-button
                 >
               </el-col>
               <el-col :span="8">
                 <el-button plain class="peopleButton"
                   >部门数<br />
-                  <h1>4</h1></el-button
+                  <h1>{{ studioPeopleInfo.departmentNumber }}</h1></el-button
                 >
               </el-col>
             </el-row>
@@ -162,13 +163,13 @@
               <el-col :span="8">
                 <el-button plain class="peopleButton"
                   >超级管理员<br />
-                  <h1>3</h1></el-button
+                  <h1>{{ studioPeopleInfo.superAdminNumber }}</h1></el-button
                 >
               </el-col>
               <el-col :span="8">
                 <el-button plain class="peopleButton"
                   >子管理员<br />
-                  <h1>7</h1></el-button
+                  <h1>{{ studioPeopleInfo.adminNumber }}</h1></el-button
                 >
               </el-col>
             </el-row>
@@ -278,13 +279,49 @@
 export default {
   name: "BackHomeContent",
   data() {
-    return {};
+    return {
+      studioPeopleInfo: {
+        studioMemberNumber: 0,
+        notActivatedNumber: 0,
+        departmentNumber: 0,
+        superAdminNumber: 0,
+        adminNumber: 0,
+      },
+    };
   },
-  methods: {},
+  methods: {
+    getPageInfo(){
+      var currentStudioId = localStorage.getItem("currentStudioId");
+      this.getStudioPeopleInfo(currentStudioId);
+    },
+    getStudioPeopleInfo(studioId) {
+      var url =
+        this.constant.baseUrl +
+        "/studio/show_people_info/" + studioId;
+      this.$axios
+        .get(url, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            console.log(res.data);
+            this.studioPeopleInfo = res.data.data;
+          } else {
+            this.alertMessage(res);
+            console.log(res.data);
+            this.handleNotLogin(res.data.code);
+          }
+        });
+    },
+  },
   created() {
     this.checkToken();
     this.token = localStorage.getItem("token");
     console.log(this.$root.currentStudioBaseInfo);
+    this.getPageInfo();
   },
 };
 </script>
