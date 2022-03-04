@@ -11,6 +11,7 @@ import GroupList from '@/components/address_book/GroupList'
 import NewFriend from '@/components/address_book/NewFriend'
 import BackHome from '@/components/BackHome'
 import BackHomeContent from '@/components/back/BackHomeContent'
+import StudioInfo from '@/components/back/StudioInfo'
 
 Vue.use(Router)
 
@@ -35,9 +36,10 @@ export default new Router({
       ]
     },
     {
-      path: '/back_home', name: 'backHome', component: BackHome,
+      path: '/back_home', name: 'backHome', component: BackHome, redirect: '/back_home/home_content',
       children: [
-        { path: 'home_content', name: 'BackHomeContent', component: BackHomeContent }
+        { path: 'home_content', name: 'BackHomeContent', component: BackHomeContent },
+        { path: 'studio_info', name: 'StudioInfo', component: StudioInfo },
       ]
     },
   ]

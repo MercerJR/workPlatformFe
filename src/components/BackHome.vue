@@ -24,7 +24,9 @@
           {{ item.studioName }}
         </el-menu-item>
       </el-submenu>
-      <el-menu-item index="/home/myself">{{ userBaseInfo.name }}</el-menu-item>
+      <el-menu-item index="/home/myself" style="float: right">{{
+        userBaseInfo.name
+      }}</el-menu-item>
     </el-menu>
 
     <el-container>
@@ -34,6 +36,7 @@
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
+          @select="handleSelect"
         >
           <el-menu-item index="/back_home/home_content">
             <i class="el-icon-menu"></i>
@@ -52,17 +55,21 @@
           <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-s-tools"></i>
-              <span>企业设置</span>
+              <span>工作室设置</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="1-1">企业信息</el-menu-item>
+              <el-menu-item index="/back_home/studio_info"
+                >工作室信息</el-menu-item
+              >
               <el-menu-item index="1-2">管理员权限</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>
       </el-aside>
       <el-main>
-        <router-view></router-view>
+        <div>
+          <router-view></router-view>
+        </div>
       </el-main>
     </el-container>
   </div>
@@ -120,7 +127,10 @@ export default {
             this.studioList = res.data.data.studioList;
             if (res.data.data.currentStudioBaseInfo != null) {
               //在localStorage中存储存储studioId
-              localStorage.setItem("currentStudioId", res.data.data.currentStudioBaseInfo.studioId);
+              localStorage.setItem(
+                "currentStudioId",
+                res.data.data.currentStudioBaseInfo.studioId
+              );
               this.$root.currentStudioBaseInfo =
                 res.data.data.currentStudioBaseInfo;
               this.$root.currentStudioBaseInfo.studioIcon =

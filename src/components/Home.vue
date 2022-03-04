@@ -28,10 +28,13 @@
           </el-menu-item>
         </el-submenu>
         <el-menu-item index="3">消息中心</el-menu-item>
-        <el-menu-item index="/home/myself" class="myself">{{
+        <el-menu-item index="/home/myself" style="float: right">{{
           userBaseInfo.name
         }}</el-menu-item>
-        <el-menu-item index="cancellation" @click="cancellation"
+        <el-menu-item
+          index="cancellation"
+          style="float: right"
+          @click="cancellation"
           ><i class="el-icon-switch-button"></i
         ></el-menu-item>
       </el-menu>
