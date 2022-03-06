@@ -61,7 +61,9 @@
               <el-menu-item index="/back_home/studio_info"
                 >工作室信息</el-menu-item
               >
-              <el-menu-item index="1-2">管理员权限</el-menu-item>
+              <el-menu-item index="/back_home/manage_admin"
+                >管理员权限</el-menu-item
+              >
             </el-menu-item-group>
           </el-submenu>
         </el-menu>

@@ -12,6 +12,9 @@ import NewFriend from '@/components/address_book/NewFriend'
 import BackHome from '@/components/BackHome'
 import BackHomeContent from '@/components/back/BackHomeContent'
 import StudioInfo from '@/components/back/StudioInfo'
+import ManageAdmin from '@/components/back/ManageAdmin'
+import SuperAdmin from '@/components/back/SuperAdmin'
+import Admin from '@/components/back/Admin'
 
 Vue.use(Router)
 
@@ -40,6 +43,13 @@ export default new Router({
       children: [
         { path: 'home_content', name: 'BackHomeContent', component: BackHomeContent },
         { path: 'studio_info', name: 'StudioInfo', component: StudioInfo },
+        {
+          path: 'manage_admin', name: 'ManageAdmin', component: ManageAdmin,
+          children: [
+            { path: 'super_admin', name: 'SuperAdmin', component: SuperAdmin },
+            { path: 'admin', name: 'Admin', component: Admin },
+          ]
+        },
       ]
     },
   ]
