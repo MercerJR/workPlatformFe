@@ -42,16 +42,10 @@
             <i class="el-icon-menu"></i>
             <span slot="title">首页</span>
           </el-menu-item>
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-s-management"></i>
-              <span>组织架构</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="1-1">成员与部门</el-menu-item>
-              <el-menu-item index="1-2">角色管理</el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
+          <el-menu-item index="/back_home/organizational_structure">
+            <i class="el-icon-s-management"></i>
+            <span slot="title">组织架构</span>
+          </el-menu-item>
           <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-s-tools"></i>

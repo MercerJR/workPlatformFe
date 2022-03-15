@@ -15,6 +15,9 @@ import StudioInfo from '@/components/back/StudioInfo'
 import ManageAdmin from '@/components/back/ManageAdmin'
 import SuperAdmin from '@/components/back/SuperAdmin'
 import Admin from '@/components/back/Admin'
+import OrganizationalStructure from '@/components/back/OrganizationalStructure'
+import Member from '@/components/back/Member'
+import Department from '@/components/back/Department'
 
 Vue.use(Router)
 
@@ -48,6 +51,13 @@ export default new Router({
           children: [
             { path: 'super_admin', name: 'SuperAdmin', component: SuperAdmin },
             { path: 'admin', name: 'Admin', component: Admin },
+          ]
+        },
+        {
+          path: 'organizational_structure', name: 'OrganizationalStructure', component: OrganizationalStructure,
+          children: [
+            { path: 'member', name: 'Member', component: Member },
+            { path: 'department', name: 'Department', component: Department },
           ]
         },
       ]

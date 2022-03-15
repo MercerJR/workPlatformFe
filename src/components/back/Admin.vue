@@ -59,7 +59,7 @@
 
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="showDialog2">移除</el-button>
+            <el-button size="mini" @click="showDialog2(scope.row)">移除</el-button>
             <!-- 弹出框2 -->
             <el-dialog
               title="移除管理员"
@@ -205,7 +205,14 @@ export default {
           this.getAdminList();
         });
     },
-    showDialog2() {
+    showDialog2(row) {
+      if (row.userId == localStorage.getItem("userId")) {
+        this.$message({
+          type: "error",
+          message: "不能将自己移除超级管理员",
+        });
+        return;
+      }
       this.dialogVisible2 = true;
     },
     dealAndHideDialog2(row) {
