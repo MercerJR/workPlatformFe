@@ -7,14 +7,6 @@
         @click="newDepartmentDialogVisible = true"
         ><i class="el-icon-plus"></i>新建部门</el-button
       >
-      <el-input
-        placeholder="请输入部门名称"
-        prefix-icon="el-icon-search"
-        v-model="searchDepartment"
-        style="float:right;width:30%"
-        size="medium"
-      >
-      </el-input>
     </div>
     <div style="margin-top: 15px">
       <el-table :data="departmentList" style="width: 100%">
@@ -24,9 +16,19 @@
         </el-table-column>
         <el-table-column prop="leader" label="负责人"> </el-table-column>
         <el-table-column label="操作">
-          <el-button type="text">编辑部门</el-button>
-          <el-button type="text">添加子部门</el-button>
-          <el-button type="text" style="color: #f56c6c">删除部门</el-button>
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              @click="updateDepartmentDialogOpen(scope.row)"
+              >编辑部门</el-button
+            >
+            <el-button
+              type="text"
+              @click="deleteDepartmentDialogOpen(scope.row)"
+              style="color: #f56c6c"
+              >删除部门</el-button
+            >
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -40,7 +42,7 @@
     >
       <el-form label-position="top" label-width="80px" :model="newDepartment">
         <el-form-item label="部门名称">
-          <el-input v-model="newDepartment.newDepartmentName"></el-input>
+          <el-input v-model="newDepartment.departmentName"></el-input>
         </el-form-item>
         <el-form-item label="上级部门名称">
           <el-input v-model="newDepartment.parentDepartmentName"></el-input>
@@ -48,7 +50,54 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="newDepartmentDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDepartment">确 定</el-button>
+        <el-button type="primary" @click="createDepartment">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 编辑部门 弹出框 -->
+    <el-dialog
+      title="编辑部门"
+      :visible.sync="updateDepartmentDialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-form
+        label-position="top"
+        label-width="80px"
+        :model="updateDepartment"
+      >
+        <el-form-item label="部门名称">
+          <el-input v-model="updateDepartment.departmentName"></el-input>
+        </el-form-item>
+        <el-form-item label="上级部门名称">
+          <el-input v-model="updateDepartment.parentDepartmentName"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="updateDepartmentDialogVisible = false"
+          >取 消</el-button
+        >
+        <el-button type="primary" @click="updateDepartmentFunc"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
+
+    <!-- 删除部门 弹出框 -->
+    <el-dialog
+      title="删除部门"
+      :visible.sync="deleteDepartmentDialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <span
+        >确认删除部门？若删除部门，部门的成员和下级部门都将属于部门的上级部门管理</span
+      >
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="newDepartmentDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="deleteDepartmentFunc"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -63,6 +112,11 @@ export default {
         departmentName: "",
         parentDepartmentName: "",
       },
+      updateDepartment: {
+        departmentName: "",
+        parentDepartmentName: "",
+      },
+      selectedDepartment: {},
       departmentList: [
         {
           departmentId: 0,
@@ -71,13 +125,17 @@ export default {
           leader: "",
         },
       ],
-      searchDepartment:"",
+      searchDepartment: "",
       newDepartmentDialogVisible: false,
+      updateDepartmentDialogVisible: false,
+      deleteDepartmentDialogVisible: false,
     };
   },
   methods: {
     handleClose() {
       this.newDepartmentDialogVisible = false;
+      this.updateDepartmentDialogVisible = false;
+      this.deleteDepartmentDialogVisible = false;
     },
     getDepartmentList() {
       var currentStudioId = localStorage.getItem("currentStudioId");
@@ -103,11 +161,85 @@ export default {
           }
         });
     },
-    addDepartment() {},
+    createDepartment() {
+      var url = this.constant.baseUrl + "/studio/create_department";
+      console.log(this.newDepartment.departmentName);
+      var createDepartmentObject = {
+        departmentName: this.newDepartment.departmentName,
+        studioId: localStorage.getItem("currentStudioId"),
+        parentDepartmentName: this.newDepartment.parentDepartmentName,
+      };
+      var jsonParam = JSON.stringify(createDepartmentObject);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.getDepartmentList();
+        });
+      this.handleClose();
+    },
+    updateDepartmentDialogOpen(row) {
+      this.selectedDepartment = row;
+      this.updateDepartmentDialogVisible = true;
+    },
+    updateDepartmentFunc() {
+      var url = this.constant.baseUrl + "/studio/update_department";
+      var updateDepartmentObject = {
+        departmentId: this.selectedDepartment.departmentId,
+        departmentName: this.updateDepartment.departmentName,
+        studioId: localStorage.getItem("currentStudioId"),
+        parentDepartmentName: this.updateDepartment.parentDepartmentName,
+      };
+      var jsonParam = JSON.stringify(updateDepartmentObject);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.getDepartmentList();
+        });
+      this.handleClose();
+    },
+    deleteDepartmentDialogOpen(row) {
+      this.selectedDepartment = row;
+      this.deleteDepartmentDialogVisible = true;
+    },
+    deleteDepartmentFunc() {
+      var url = this.constant.baseUrl + "/studio/delete_department";
+      var deleteDepartmentObject = {
+        departmentId: this.selectedDepartment.departmentId,
+        studioId: localStorage.getItem("currentStudioId"),
+      };
+      var jsonParam = JSON.stringify(deleteDepartmentObject);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.getDepartmentList();
+        });
+      this.handleClose();
+    },
   },
-  created(){
+  created() {
     this.getDepartmentList();
-  }
+  },
 };
 </script>
 

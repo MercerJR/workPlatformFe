@@ -72,14 +72,16 @@
               <el-table-column prop="departmentName" label="部门">
               </el-table-column>
               <el-table-column label="操作">
-                <el-button
-                  type="text"
-                  @click="changeDepartmentDialogVisible = true"
-                  >变更部门</el-button
-                >
-                <el-button type="text" style="color: #f56c6c"
-                  >离职操作</el-button
-                >
+                <template slot-scope="scope">
+                  <el-button
+                    type="text"
+                    @click="openChangeDepartmentDialog(scope.row)"
+                    >变更部门</el-button
+                  >
+                  <el-button type="text" style="color: #f56c6c"
+                    >离职操作</el-button
+                  >
+                </template>
               </el-table-column>
             </el-table>
           </div>
@@ -145,7 +147,9 @@
         <el-button @click="changeDepartmentDialogVisible = false"
           >取 消</el-button
         >
-        <el-button type="primary" @click="changeDepartment">确 定</el-button>
+        <el-button type="primary" @click="changeDepartmentFunc"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -158,6 +162,7 @@ export default {
     return {
       departmentList: [],
       selectedDepartment: {},
+      selectedMember:{},
       memberList: [],
       newDepartment: {
         departmentName: "",
@@ -202,7 +207,7 @@ export default {
           this.handleNotLogin(res.data.code);
           this.getDepartmentList();
         });
-        this.handleClose();
+      this.handleClose();
     },
     shiftDepartmentPage() {
       this.$router.push("/back_home/organizational_structure/department");
@@ -254,6 +259,34 @@ export default {
             this.handleNotLogin(res.data.code);
           }
         });
+    },
+    openChangeDepartmentDialog(member){
+      this.changeDepartmentDialogVisible = true
+      this.selectedMember = member;
+    },
+    changeDepartmentFunc() {
+      var url = this.constant.baseUrl + "/studio/change_department";
+      var oldDepartmentId = this.selectedDepartment.departmentId;
+      var changeDepartmentObject = {
+        departmentName: this.changeDepartment.departmentName,
+        studioId: localStorage.getItem("currentStudioId"),
+        userId: this.selectedMember.userId,
+        oldDepartmentId: oldDepartmentId,
+      };
+      var jsonParam = JSON.stringify(changeDepartmentObject);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.getDepartmentMemberList(oldDepartmentId);
+        });
+      this.handleClose();
     },
   },
   created() {
