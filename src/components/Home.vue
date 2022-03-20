@@ -67,7 +67,7 @@
               <i class="el-icon-circle-plus"></i>
               <span slot="title">新的联系人</span>
             </el-menu-item>
-            <el-menu-item index="1-1">
+            <el-menu-item index="/home/people_structure">
               <i class="el-icon-s-custom"></i>
               <span slot="title">组织架构</span>
             </el-menu-item>
