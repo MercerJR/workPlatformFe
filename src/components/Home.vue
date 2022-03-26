@@ -54,7 +54,7 @@
           :collapse="isCollapse"
           :router="isRouter"
         >
-          <el-menu-item index="1">
+          <el-menu-item index="/home/chat">
             <i class="el-icon-chat-line-round"></i>
             <span slot="title">消息</span>
           </el-menu-item>

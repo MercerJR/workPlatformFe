@@ -19,6 +19,7 @@ import OrganizationalStructure from '@/components/back/OrganizationalStructure'
 import Member from '@/components/back/Member'
 import Department from '@/components/back/Department'
 import PeopleStructure from '@/components/address_book/PeopleStructure'
+import Chat from '@/components/Chat'
 
 Vue.use(Router)
 
@@ -41,6 +42,7 @@ export default new Router({
         { path: 'group_list', name: 'GroupList', component: GroupList },
         { path: 'new_friend', name: 'NewFriend', component: NewFriend },
         { path: 'people_structure', name: 'PeopleStructure', component: PeopleStructure },
+        { path: 'chat', name: 'Chat', component: Chat },
       ]
     },
     {
