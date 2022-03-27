@@ -30,7 +30,7 @@ export default {
             //在后台记录正在使用的工作室
             this.recordCurrentStudio();
             //在localStorage中存储存储studioId
-            localStorage.setItem("currentStudioId",studioId);
+            localStorage.setItem("currentStudioId", studioId);
             //切换后刷新页面
             location.reload();
         }
@@ -72,6 +72,26 @@ export default {
                     this.alertMessage(res);
                     this.handleNotLogin(res.data.code);
                 });
+        }
+        Vue.prototype.doChat = function (chatId,targetType) {
+            console.log("come on" + chatId + "," + targetType);
+            var url = this.constant.baseUrl + "/chat_info/update_chat_list";
+            var updateChatListObject = {
+                chatId: chatId,
+                targetType: targetType,
+            };
+            var jsonParam = JSON.stringify(updateChatListObject);
+            this.$axios
+                .post(url, jsonParam, {
+                    headers: {
+                        token: this.$root.token,
+                        "content-type": "application/json",
+                    },
+                })
+                .then((res) => {
+                    this.handleNotLogin(res.data.code);
+                });
+            this.$router.push("/home/chat");
         }
     }
 }  

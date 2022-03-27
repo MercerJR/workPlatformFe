@@ -53,7 +53,7 @@
           </div>
           <div class="text item">
             <div class="bottom clearfix">
-              <el-button type="primary">发消息</el-button>
+              <el-button type="primary" @click="chat2(friendInfo.friendId)">发消息</el-button>
               <el-button
                 type="text"
                 style="color: #f56c6c"
@@ -164,7 +164,12 @@ export default {
     hideFriendInfo() {
       this.friendInfoShow = false;
     },
-    chat() {},
+    chat(row) {
+      this.doChat(row.friendId,0);
+    },
+    chat2(friendId){
+      this.doChat(friendId,0);
+    },
     checkEmpty(property) {
       return property == null || property == "";
     },
