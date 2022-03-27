@@ -1,5 +1,5 @@
 <template>
-  <div @keyup.enter="wsSend(1,input)">
+  <div @keyup.enter="wsSend(1,input,2,0,1)">
     <el-input v-model="input" placeholder="请输入内容"></el-input>
     <el-input v-model="input2" placeholder="请输入内容"></el-input>
   </div>
@@ -38,7 +38,7 @@ export default {
     },
     wsOnOpen() {
       console.log("前端ws连接成功");
-      this.wsSend(0,this.$root.token);
+      this.wsSend(0,this.$root.token,0,0,0);
     },
     wsOnError() {
       //连接建立失败重连
@@ -53,14 +53,17 @@ export default {
         this.$router.push("/login");
       }
       if(resObj.code == 0){
-        this.input2 = resObj.content;
+        this.input2 = msg.data;
       }
     },
-    wsSend(type,content) {
+    wsSend(type,content,targetId,targetType,studioId) {
       //数据发送
       var msgObj = {
         type: type,
         content:content,
+        targetId:targetId,
+        targetType:targetType,
+        studioId:studioId,
       }
       this.ws.send(JSON.stringify(msgObj));
     },
