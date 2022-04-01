@@ -1,30 +1,32 @@
 <template>
-  <div @keyup.enter="wsSend(1, input, 2, 0, 1)">
+  <div>
     <!-- <el-input v-model="input" placeholder="请输入内容"></el-input>
     <el-input v-model="input2" placeholder="请输入内容"></el-input> -->
 
     <el-row>
       <el-col :span="6">
         <!-- 消息列表 -->
-        <el-table :data="chatList" style="width: 100%" @cell-click="select">
-          <el-table-column label="消息列表">
-            <template slot-scope="scope">
-              <el-row>
-                <el-col :span="4">
-                  <div class="block">
-                    <el-avatar :size="45" :src="scope.row.icon"></el-avatar>
-                  </div>
-                </el-col>
-                <el-col :span="20">
-                  <div style="font-size: 15px">
-                    <span>{{ scope.row.chatName }}</span>
-                  </div>
-                  <el-tag size="small">{{ scope.row.insideTag }}</el-tag>
-                </el-col>
-              </el-row>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div v-if="chatListShow">
+          <el-table :data="chatList" style="width: 100%" @cell-click="select">
+            <el-table-column label="消息列表">
+              <template slot-scope="scope">
+                <el-row>
+                  <el-col :span="4">
+                    <div class="block">
+                      <el-avatar :size="45" :src="scope.row.icon"></el-avatar>
+                    </div>
+                  </el-col>
+                  <el-col :span="20">
+                    <div style="font-size: 15px">
+                      <span>{{ scope.row.chatName }}</span>
+                    </div>
+                    <el-tag size="small">{{ scope.row.insideTag }}</el-tag>
+                  </el-col>
+                </el-row>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </el-col>
       <el-col :span="18">
         <div class="messageBox" v-show="isSelected">
@@ -46,13 +48,11 @@
           </div>
           <!-- 消息框 -->
           <div style="height: 600px; background-color: #f1f3f4">
-            <el-scrollbar style="height: 100%">
+            <el-scrollbar style="height: 100%" ref="toTheBottom">
               <!-- 消息列表 -->
               <div v-if="messageBoxShow">
                 <div
-                  v-for="(item, index) in msgRecordMap.get(
-                    getMapKey(selectedChat.targetType, selectedChat.chatId)
-                  )"
+                  v-for="(item, index) in msgRecordList"
                   :key="index"
                   class="message"
                 >
@@ -89,7 +89,7 @@
             ></el-input>
           </div>
           <!-- 底部按钮 -->
-          <div style="margin-top: 15px">
+          <div style="margin-top: 15px" @keyup.enter="sendMessage">
             <el-button type="primary" @click="sendMessage">发送</el-button>
             <el-button type="success" @click="upload">上传</el-button>
           </div>
@@ -131,23 +131,10 @@ export default {
         targetType: 0,
       },
       isSelected: false,
-      chatRecordList: [
-        // {
-        //   senderId: 1,
-        //   senderName: "托雷斯",
-        //   icon: "",
-        //   content: "你好小老弟",
-        // },
-        // {
-        //   senderId: 2,
-        //   senderName: "菲利克斯",
-        //   icon: "",
-        //   content:
-        //     "你好大哥哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈",
-        // },
-      ],
       msgRecordMap: {},
-      messageBoxShow:true,
+      msgRecordList: [],
+      messageBoxShow: true,
+      chatListShow: true,
     };
   },
 
@@ -165,25 +152,6 @@ export default {
   },
 
   methods: {
-    testMap() {
-      var msgRecord1 = {
-        senderId: 1,
-        senderName: "托雷斯",
-        icon: "",
-        content: "ahhahahahahaha",
-        time: "sssss",
-      };
-      var msgRecord2 = {
-        senderId: 2,
-        senderName: "菲利克斯",
-        icon: "",
-        content: "ahhahahahahaha",
-        time: "sssss",
-      };
-      var msgList = [msgRecord1, msgRecord2];
-      this.msgRecordMap.set("0:2", msgList);
-      console.log(this.msgRecordMap);
-    },
     initWebSocket() {
       //初始化weosocket
       const wsUrl = "ws://localhost:8090/chat";
@@ -218,18 +186,36 @@ export default {
           content: msgObj.content,
           time: msgObj.time,
         };
-        //对map进行操作
-        var key = msgObj.targetType + ":" + this.selectedChat.chatId;
+        //获取chatId  senderId和targetId中与本人userId不相同的那个id则为chatId
+        var chatId =
+          msgObj.senderId == this.currentUser.userId
+            ? msgObj.targetId
+            : msgObj.senderId;
+        //将其聊天置顶
+        this.chatGoTop(chatId);
+
+        //对map进行操作，将聊天记录存入map中
+        //key为 聊天类型+对方Id
+        var key = msgObj.targetType + ":" + chatId;
         var msgRecordList = this.msgRecordMap.get(key);
+        //如果消息列表本来就为空，就去后端获取消息记录，若不为空，则直接把新消息放入已有的消息记录列表中
         if (msgRecordList == null) {
-          msgRecordList = [msgRecord];
+          this.getMsgRecord(
+            this.selectedChat.chatId,
+            this.selectedChat.targetType
+          ).then((res) => {
+            msgRecordList = res;
+          });
         } else {
           msgRecordList.push(msgRecord);
         }
         this.msgRecordMap.set(key, msgRecordList);
-        this.messageBoxShow = false;
-        this.messageBoxShow = true;
-        console.log(this.msgRecordMap.get(key));
+        this.msgRecordList = msgRecordList;
+        //解决v-for不会实时更新的问题，让标签内容重新生成
+        this.reloadMsgReocrd();
+        this.scrollbarToTheBottom();
+
+        console.log(msgRecord);
       }
     },
     wsSend(type, content, targetId, targetType, studioId) {
@@ -251,6 +237,14 @@ export default {
     select(row) {
       this.isSelected = true;
       this.selectedChat = row;
+      this.getMsgRecord(
+        this.selectedChat.chatId,
+        this.selectedChat.targetType
+      ).then((res) => {
+        this.msgRecordList = res;
+        this.scrollbarToTheBottom();
+      });
+      this.reloadMsgReocrd();
     },
     sendMessage() {
       var studioId =
@@ -264,6 +258,7 @@ export default {
         this.selectedChat.targetType,
         studioId
       );
+      this.msgInput = "";
     },
     upload() {},
     getChatList() {
@@ -287,10 +282,100 @@ export default {
           }
         });
     },
-    getMapKey(targetType, senderId) {
-      var key = targetType + ":" + senderId;
+    getMapKey(targetType, chatId) {
+      var key = targetType + ":" + chatId;
       console.log("key:" + key);
       return key;
+    },
+    updateChatList(chatTargetId, targetType) {
+      var url = this.constant.baseUrl + "/chat_info/update_chat_list";
+      var updateChatListReq = {
+        chatId: chatTargetId,
+        targetType: targetType,
+      };
+      var jsonParam = JSON.stringify(updateChatListReq);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.getChatList();
+        });
+    },
+    chatGoTop(chatId) {
+      for (var i = 0; i < this.chatList.length; i++) {
+        //如果该聊天已经存在于消息列表中，则直接放入顶部
+        if (this.chatList[i].chatId == chatId) {
+          var item = this.chatList[i];
+          this.chatList.splice(i, 1);
+          this.chatList.unshift(item);
+
+          this.chatListShow = false;
+          this.chatListShow = true;
+
+          return;
+        }
+      }
+      //如果该聊天本来不存在，则直接重新获取聊天列表
+      this.getChatList();
+      this.reloadChatList();
+    },
+    async getMsgRecord(chatId, targetType) {
+      var key = this.getMapKey(
+        this.selectedChat.targetType,
+        this.selectedChat.chatId
+      );
+      var msgRecordList = this.msgRecordMap.get(key);
+      if (msgRecordList != null && msgRecordList.length != 0) {
+        return msgRecordList;
+      }
+      var url =
+        this.constant.baseUrl +
+        "/chat_info/show_msg_record?target_id=" +
+        chatId +
+        "&target_type=" +
+        targetType +
+        "&studio_id=" +
+        localStorage.getItem("currentStudioId");
+      var that = this;
+      await this.$axios
+        .get(url, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            console.log(res.data);
+            msgRecordList = res.data.data;
+          } else {
+            this.alertMessage(res);
+            console.log(res.data);
+            this.handleNotLogin(res.data.code);
+          }
+        });
+      this.msgRecordMap.set(key, msgRecordList);
+      return msgRecordList;
+    },
+    reloadMsgReocrd() {
+      this.messageBoxShow = false;
+      this.messageBoxShow = true;
+    },
+    reloadChatList() {
+      this.chatListShow = false;
+      this.chatListShow = true;
+    },
+    scrollbarToTheBottom() {
+      let div = this.$refs["toTheBottom"].$refs["wrap"];
+      this.$nextTick(() => {
+        div.scrollTop = div.scrollHeight;
+      });
     },
   },
 };
@@ -315,9 +400,10 @@ export default {
   margin-top: 15px;
 }
 .myselfName {
-  color: #409eff;
+  color: #67c23a;
 }
 .otherName {
+  color: #409eff;
 }
 .right {
   float: right;

@@ -89,9 +89,9 @@ export default {
                     },
                 })
                 .then((res) => {
+                    this.$router.push("/home/chat");
                     this.handleNotLogin(res.data.code);
                 });
-            this.$router.push("/home/chat");
         }
     }
 }  
