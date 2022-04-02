@@ -132,12 +132,11 @@ export default {
     this.checkToken();
     this.$root.token = localStorage.getItem("token");
     this.currentUser.userId = localStorage.getItem("userId");
+    this.currentStudioId = this.getCurrentStudioId();
+    this.msgRecordMap = new Map();
+    this.initWebSocket();
     this.getChatList();
 
-    this.initWebSocket();
-    this.msgRecordMap = new Map();
-
-    this.currentStudioId = this.getCurrentStudioId();
   },
   destroyed() {
     this.ws.close(); //离开路由之后断开websocket连接

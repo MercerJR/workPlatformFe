@@ -56,6 +56,16 @@
               </el-table-column>
               <el-table-column prop="departmentName" label="部门">
               </el-table-column>
+              <el-table-column label="">
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    @click="chat(scope.row)"
+                    >发消息</el-button
+                  >
+                </template>
+              </el-table-column>
             </el-table>
           </div>
         </div>
@@ -76,7 +86,7 @@ export default {
         departmentName: "",
       },
       searchContent: "",
-      deaprtmentHeaderShow:false,
+      deaprtmentHeaderShow: false,
     };
   },
   methods: {
@@ -162,6 +172,9 @@ export default {
             this.handleNotLogin(res.data.code);
           }
         });
+    },
+    chat(row){
+      this.doChat(row.userId,0);
     },
   },
   created() {
