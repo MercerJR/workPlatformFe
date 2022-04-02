@@ -16,7 +16,7 @@
     </el-col>
     <el-col :span="10">
       <div v-show="friendInfoShow">
-        <el-card class="box-card">
+        <el-card class="box-card" style="width:90%">
           <div slot="header" class="clearfix">
             <el-page-header
               @back="hideFriendInfo"

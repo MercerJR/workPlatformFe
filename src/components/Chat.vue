@@ -1,8 +1,5 @@
 <template>
   <div>
-    <!-- <el-input v-model="input" placeholder="请输入内容"></el-input>
-    <el-input v-model="input2" placeholder="请输入内容"></el-input> -->
-
     <el-row>
       <el-col :span="6">
         <!-- 消息列表 -->
@@ -112,16 +109,7 @@ export default {
       currentUser: {
         userId: 1,
       },
-      chatList: [
-        // {
-        //   chatId: 2,
-        //   icon: "",
-        //   chatName: "菲利克斯",
-        //   insideType: 0,
-        //   insideTag: "外部用户",
-        //   targetType: 0,
-        // },
-      ],
+      chatList: [],
       selectedChat: {
         chatId: "",
         icon: "",
@@ -135,6 +123,8 @@ export default {
       msgRecordList: [],
       messageBoxShow: true,
       chatListShow: true,
+
+      currentStudioId:0,
     };
   },
 
@@ -146,6 +136,8 @@ export default {
 
     this.initWebSocket();
     this.msgRecordMap = new Map();
+
+    this.currentStudioId = this.getCurrentStudioId();
   },
   destroyed() {
     this.ws.close(); //离开路由之后断开websocket连接
@@ -247,23 +239,18 @@ export default {
       this.reloadMsgReocrd();
     },
     sendMessage() {
-      var studioId =
-        this.selectedChat.insideType == 1
-          ? localStorage.getItem("currentStudioId")
-          : 0;
       this.wsSend(
         1,
         this.msgInput,
         this.selectedChat.chatId,
         this.selectedChat.targetType,
-        studioId
+        this.currentStudioId
       );
       this.msgInput = "";
     },
     upload() {},
     getChatList() {
-      var studioId = localStorage.getItem("currentStudioId");
-      var url = this.constant.baseUrl + "/chat_info/show_chat_list/" + studioId;
+      var url = this.constant.baseUrl + "/chat_info/show_chat_list/" + this.currentStudioId;
       this.$axios
         .get(url, {
           headers: {
@@ -341,7 +328,7 @@ export default {
         "&target_type=" +
         targetType +
         "&studio_id=" +
-        localStorage.getItem("currentStudioId");
+        this.currentStudioId
       var that = this;
       await this.$axios
         .get(url, {

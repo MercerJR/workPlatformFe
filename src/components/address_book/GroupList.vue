@@ -33,7 +33,7 @@
 
     <el-col :span="10">
       <div v-show="groupInfoShow">
-        <el-card class="box-card">
+        <el-card class="box-card" style="width: 90%">
           <div slot="header" class="clearfix">
             <el-page-header
               @back="hideGroupInfo"
@@ -101,7 +101,6 @@
 
           <div class="text item">
             <div class="bottom clearfix">
-              <!-- <el-button type="primary">发消息</el-button> -->
               <el-table
                 :data="groupMemberList"
                 style="width: 100%"
@@ -128,6 +127,14 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <el-button
+                type="primary"
+                style="margin-top: 20px"
+                @click="chat2()"
+                >发消息</el-button
+              >
+
+              <!-- 成员管理dialog -->
               <el-dialog
                 title="成员管理"
                 :visible.sync="managerMemberDialogShow"
@@ -145,7 +152,12 @@
                   >
                   </el-switch>
                 </div>
-                <el-button type="danger" style="margin-top:25px;" @click="deleteFriend">删除成员</el-button>
+                <el-button
+                  type="danger"
+                  style="margin-top: 25px"
+                  @click="deleteFriend"
+                  >删除成员</el-button
+                >
                 <span slot="footer" class="dialog-footer">
                   <el-button
                     type="primary"
@@ -279,7 +291,12 @@ export default {
           }
         });
     },
-    chat() {},
+    chat(row) {
+      this.doChat(row.groupId);
+    },
+    chat2(){
+      this.doChat(this.groupInfo.groupId,1);
+    },
     checkEmpty(property) {
       return property == null || property == "";
     },
@@ -337,23 +354,27 @@ export default {
           this.alertMessage(res);
           console.log(res.data);
           this.handleNotLogin(res.data.code);
-          if(res.data.code == 0){
+          if (res.data.code == 0) {
             this.getMemberList(this.groupInfo.groupId);
           }
         });
     },
     openDialog(row) {
       //如果当前用户的角色是成员，或被点击的用户是群主，或被点击的用户是自己，都将不会打开dialog
-      if (this.groupInfo.currentUserRoleId == 0 || row.roleId == 2 || row.userId == localStorage.getItem("userId")) {
+      if (
+        this.groupInfo.currentUserRoleId == 0 ||
+        row.roleId == 2 ||
+        row.userId == localStorage.getItem("userId")
+      ) {
         return;
       }
       this.selectedMemberInfo = row;
       console.log(this.selectedMemberInfo);
       this.managerMemberDialogShow = true;
     },
-    deleteFriend(){
+    deleteFriend() {
       console.log("删除成员");
-    }
+    },
   },
   created() {
     this.checkToken();

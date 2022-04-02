@@ -73,8 +73,7 @@ export default {
                     this.handleNotLogin(res.data.code);
                 });
         }
-        Vue.prototype.doChat = function (chatId,targetType) {
-            console.log("come on" + chatId + "," + targetType);
+        Vue.prototype.doChat = function (chatId, targetType) {
             var url = this.constant.baseUrl + "/chat_info/update_chat_list";
             var updateChatListObject = {
                 chatId: chatId,
@@ -92,6 +91,11 @@ export default {
                     this.$router.push("/home/chat");
                     this.handleNotLogin(res.data.code);
                 });
+        }
+        Vue.prototype.getCurrentStudioId = function () {
+            var studioId = localStorage.getItem("currentStudioId");
+            studioId = studioId == null ? 0 : studioId;
+            return studioId;
         }
     }
 }  
