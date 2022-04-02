@@ -72,12 +72,28 @@
             <el-button
               type="primary"
               size="mini"
-              @click="addFriend(scope.$index, scope.row)"
+              @click="openAddFriendDialog(scope.$index, scope.row)"
               >加好友</el-button
             >
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 申请好友dialog -->
+      <el-dialog
+        title="添加好友"
+        :visible.sync="addFriendDialogVisible"
+        width="30%"
+      >
+        <span>请输入添加好友验证信息</span>
+        <el-input v-model="addFriendApplyMessage" placeholder="请输入好友验证信息"></el-input>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="addFriendDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="addFriend()"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
 
       <el-table
         :data="groupResult"
@@ -117,12 +133,29 @@
             <el-button
               type="primary"
               size="mini"
-              @click="addGroup(scope.$index, scope.row)"
+              @click="openJoinGroupDialog(scope.$index, scope.row)"
               >加入群聊</el-button
             >
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 申请加入群聊dialog -->
+      <el-dialog
+        title="添加好友"
+        :visible.sync="joinGroupDialogVisible"
+        width="30%"
+      >
+        <span>请输入加入群聊验证信息</span>
+        <br>
+        <el-input v-model="joinGroupApplyMessage" placeholder="请输入加入群聊验证信息"></el-input>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="joinGroupDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="joinGroup()"
+            >确 定</el-button
+          >
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -160,27 +193,82 @@ export default {
       ],
       userResultShow: false,
       groupResultShow: false,
+
+      addFriendApplyMessage: "",
+      addFriendDialogVisible: false,
+      operateUserId: 0,
+
+      joinGroupApplyMessage: "",
+      joinGroupDialogVisible: false,
+      operateGroupId: 0,
     };
   },
   methods: {
     checkEmpty(property) {
       return property == null || property == "";
     },
-    addFriend(index, row) {
-      console.log(index, row);
+    openAddFriendDialog(index,row){
+      this.addFriendDialogVisible = true;
+      this.operateUserId = row.userId;
     },
-    addGroup(index, row) {
-      console.log(index, row);
+    addFriend() {
+      var url = this.constant.baseUrl + "/friend/apply";
+      var applyAddFriendReq = {
+        targetId: this.operateUserId,
+        applyMessage: this.addFriendApplyMessage,
+      };
+      var jsonParam = JSON.stringify(applyAddFriendReq);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.addFriendDialogVisible = false;
+        });
+    },
+    openJoinGroupDialog(index,row){
+      this.joinGroupDialogVisible = true;
+      this.operateGroupId = row.groupId;
+    },
+    joinGroup() {
+      var url = this.constant.baseUrl + "/group/apply_join";
+      var applyJoinGroupReq = {
+        groupId: this.operateGroupId,
+        applyMessage: this.joinGroupApplyMessage,
+      };
+      var jsonParam = JSON.stringify(applyJoinGroupReq);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.joinGroupDialogVisible = false;
+        });
     },
     search() {
       var select = this.checkEmpty(this.select) ? "user" : this.select;
-      var url = this.constant.baseUrl + "/search/" + select + "?search_content=" + this.searchContent;
+      var url =
+        this.constant.baseUrl +
+        "/search/" +
+        select +
+        "?search_content=" +
+        this.searchContent;
       console.log(url);
       console.log("search方法" + this.$root.token);
       this.$axios
         .get(url, {
           headers: {
-            "token": this.$root.token,
+            token: this.$root.token,
             "content-type": "application/json",
           },
         })
