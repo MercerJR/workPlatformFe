@@ -8,7 +8,7 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="">
+            <el-form-item label="验证消息">
               <span>{{ props.row.noticeContent }}</span>
             </el-form-item>
           </el-form>
@@ -86,8 +86,67 @@ export default {
           }
         });
     },
-    agree(index, row) {},
-    refuse(index, row) {},
+    agree(index, row) {
+      if(row.noticeType == 0){
+        this.dealFriendApply(row.applyId,true);
+      }else if(row.noticeType == 1){
+        this.dealGroupApply(row.applyId,true);
+      }else if(row.noticeType == 2){
+        this.dealStudioApply(row.applyId,true);
+      }
+    },
+    refuse(index, row) {
+      if(row.noticeType == 0){
+        this.dealFriendApply(row.applyId,false);
+      }else if(row.noticeType == 1){
+        this.dealGroupApply(row.applyId,false);
+      }else if(row.noticeType == 2){
+        this.dealStudioApply(row.applyId,false);
+      }
+    },
+    dealFriendApply(applyId,response){
+      var url = this.constant.baseUrl + "/friend/deal_apply";
+      var dealApplyReq = {
+        applyId: applyId,
+        response: response,
+      };
+      var jsonParam = JSON.stringify(dealApplyReq);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.getNoticeList();
+        });
+    },
+    dealGroupApply(applyId,response){
+      var url = this.constant.baseUrl + "/group/approve_apply";
+      var dealApplyReq = {
+        applyId: applyId,
+        response: response,
+      };
+      var jsonParam = JSON.stringify(dealApplyReq);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.getNoticeList();
+        });
+    },
+    dealStudioApply(){
+      
+    },
   },
 };
 </script>
