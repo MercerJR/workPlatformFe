@@ -20,6 +20,7 @@ import Member from '@/components/back/Member'
 import Department from '@/components/back/Department'
 import PeopleStructure from '@/components/address_book/PeopleStructure'
 import Chat from '@/components/Chat'
+import Notice from '@/components/Notice'
 
 Vue.use(Router)
 
@@ -43,6 +44,7 @@ export default new Router({
         { path: 'new_friend', name: 'NewFriend', component: NewFriend },
         { path: 'people_structure', name: 'PeopleStructure', component: PeopleStructure },
         { path: 'chat', name: 'Chat', component: Chat },
+        { path: 'notice', name: 'Notice', component: Notice },
       ]
     },
     {

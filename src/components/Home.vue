@@ -27,7 +27,7 @@
             {{ item.studioName }}
           </el-menu-item>
         </el-submenu>
-        <el-menu-item index="3">消息中心</el-menu-item>
+        <el-menu-item index="/home/notice">消息中心</el-menu-item>
         <el-menu-item index="/home/myself" style="float: right">{{
           userBaseInfo.name
         }}</el-menu-item>
