@@ -14,7 +14,8 @@
           @cell-click="openDialog"
         >
           <el-table-column prop="title" label="推文标题"> </el-table-column>
-          <el-table-column prop="publishName" label="发布人"> </el-table-column>
+          <el-table-column prop="publisherName" label="发布人">
+          </el-table-column>
           <el-table-column prop="time" label="推送时间"> </el-table-column>
         </el-table>
       </template>
@@ -83,7 +84,7 @@
               <el-scrollbar style="height: 100%">
                 <div>
                   <el-tree
-                    :data="data"
+                    :data="memberTreeList"
                     show-checkbox
                     node-key="id"
                     @check-change="handleMemberCheckChange"
@@ -114,8 +115,8 @@ export default {
           seq: 0,
           title: "biaoti",
           content: "kanab ",
-          publishId: 1,
-          publishName: "tuoleisi",
+          publisherId: 1,
+          publisherName: "tuoleisi",
           time: "2022-2-2",
         },
       ],
@@ -130,56 +131,7 @@ export default {
 
       departmentSet: [],
       memberSet: [],
-      data: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1",
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1",
-            },
-            {
-              id: 6,
-              label: "二级 2-2",
-            },
-          ],
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1",
-            },
-            {
-              id: 8,
-              label: "二级 3-2",
-            },
-          ],
-        },
-      ],
+      memberTreeList:[],
     };
   },
 
@@ -187,6 +139,7 @@ export default {
     this.checkToken();
     this.$root.token = localStorage.getItem("token");
     this.currentStudioId = this.getCurrentStudioId();
+    this.getAnnouncementList();
   },
 
   methods: {
@@ -196,8 +149,9 @@ export default {
     },
     openPublishDialog() {
       this.publishDialogVisible = true;
-    //   this.departmentSet = new Set();
+      //   this.departmentSet = new Set();
       this.memberSet = new Set();
+      this.getMemberTreeList();
     },
     // handleDepartmentCheckChange(data, checked, indeterminate) {
     //   console.log(data, checked, indeterminate);
@@ -212,7 +166,7 @@ export default {
       if (checked) {
         this.memberSet.add(data.id);
       } else {
-        this.memberSet.add(data.id);
+        this.memberSet.delete(data.id);
       }
     },
     publish() {
@@ -221,6 +175,8 @@ export default {
       this.publishDialogVisible = false;
     },
     publishAnnouncement() {
+      //    var memberList = this.memberSet.keys();
+      console.log(this.memberSet);
       var url = this.constant.baseUrl + "/announcement/publish";
       var publishReq = {
         title: this.inputTitle,
@@ -241,6 +197,52 @@ export default {
           this.handleNotLogin(res.data.code);
         });
     },
+    getMemberTreeList() {
+      var url =
+        this.constant.baseUrl +
+        "/studio/show_department_member_list_in_tree/" +
+        this.currentStudioId;
+      this.$axios
+        .get(url, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            console.log(res.data);
+            this.memberTreeList = res.data.data;
+          } else {
+            this.alertMessage(res);
+            console.log(res.data);
+            this.handleNotLogin(res.data.code);
+          }
+        });
+    },
+    getAnnouncementList(){
+        var url =
+        this.constant.baseUrl +
+        "/announcement/show_announcement_list/" +
+        this.currentStudioId;
+      this.$axios
+        .get(url, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            console.log(res.data);
+            this.announcementList = res.data.data;
+          } else {
+            this.alertMessage(res);
+            console.log(res.data);
+            this.handleNotLogin(res.data.code);
+          }
+        });
+    }
   },
 };
 </script>

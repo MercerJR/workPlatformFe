@@ -17,7 +17,15 @@
                     <div style="font-size: 15px">
                       <span>{{ scope.row.chatName }}</span>
                     </div>
-                    <el-tag size="small">{{ scope.row.insideTag }}</el-tag>
+                    <el-tag
+                      size="small"
+                      :class="
+                        scope.row.insideType == 1
+                          ? 'insideTypeClass'
+                          : 'outsideTypeClass'
+                      "
+                      >{{ scope.row.insideTag }}</el-tag
+                    >
                   </el-col>
                 </el-row>
               </template>
@@ -69,7 +77,29 @@
                           "
                           >{{ item.senderName }}</span
                         >
-                        <el-card shadow="hover">{{ item.content }}</el-card>
+                        <el-card shadow="hover">
+                          <span>{{
+                            item.targetType == 2
+                              ? item.content.split("#")[0]
+                              : item.content
+                          }}</span>
+                          <div
+                            v-show="
+                              item.targetType == 2 &&
+                              item.content.split('#')[1] != null
+                            "
+                          >
+                            <el-button
+                              type="text"
+                              @click="
+                                openAnnouncementDialog(
+                                  item.content.split('#')[1]
+                                )
+                              "
+                              >消息推送</el-button
+                            >
+                          </div>
+                        </el-card>
                       </div>
                     </el-col>
                   </el-row>
@@ -77,6 +107,28 @@
               </div>
             </el-scrollbar>
           </div>
+
+          <!-- 推文dialog -->
+          <el-dialog
+            title="推文详情"
+            :visible.sync="dialogVisible"
+            width="30%"
+            height="60%"
+          >
+            <h2>{{ announcement.title }}</h2>
+            <br />
+            <span>推送者：{{ announcement.publisherName }}</span>
+            <br />
+            <span>
+              {{ announcement.content }}
+            </span>
+            <span slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="dialogVisible = false"
+                >关闭</el-button
+              >
+            </span>
+          </el-dialog>
+
           <!-- 消息输入框 -->
           <div style="margin-top: 25px" @keyup.enter="sendMessage">
             <el-input
@@ -124,7 +176,10 @@ export default {
       messageBoxShow: true,
       chatListShow: true,
 
-      currentStudioId:0,
+      currentStudioId: 0,
+
+      announcement: {},
+      dialogVisible: false,
     };
   },
 
@@ -136,7 +191,6 @@ export default {
     this.msgRecordMap = new Map();
     this.initWebSocket();
     this.getChatList();
-
   },
   destroyed() {
     this.ws.close(); //离开路由之后断开websocket连接
@@ -249,7 +303,10 @@ export default {
     },
     upload() {},
     getChatList() {
-      var url = this.constant.baseUrl + "/chat_info/show_chat_list/" + this.currentStudioId;
+      var url =
+        this.constant.baseUrl +
+        "/chat_info/show_chat_list/" +
+        this.currentStudioId;
       this.$axios
         .get(url, {
           headers: {
@@ -327,7 +384,7 @@ export default {
         "&target_type=" +
         targetType +
         "&studio_id=" +
-        this.currentStudioId
+        this.currentStudioId;
       var that = this;
       await this.$axios
         .get(url, {
@@ -363,6 +420,30 @@ export default {
         div.scrollTop = div.scrollHeight;
       });
     },
+    openAnnouncementDialog(publisUserData) {
+      var url =
+        this.constant.baseUrl +
+        "/announcement/show_one_announcement/" +
+        publisUserData;
+      this.$axios
+        .get(url, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            console.log(res.data);
+            this.announcement = res.data.data;
+          } else {
+            this.alertMessage(res);
+            console.log(res.data);
+            this.handleNotLogin(res.data.code);
+          }
+        });
+      this.dialogVisible = true;
+    },
   },
 };
 </script>
@@ -396,5 +477,11 @@ export default {
 }
 .left {
   float: left;
+}
+.insideTypeClass {
+  color: #409eff;
+}
+.outsideTypeClass {
+  color: #e6a23c;
 }
 </style>
