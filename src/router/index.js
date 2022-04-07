@@ -21,6 +21,7 @@ import Department from '@/components/back/Department'
 import PeopleStructure from '@/components/address_book/PeopleStructure'
 import Chat from '@/components/Chat'
 import Notice from '@/components/Notice'
+import Announcement from '@/components/Announcement'
 
 Vue.use(Router)
 
@@ -45,6 +46,7 @@ export default new Router({
         { path: 'people_structure', name: 'PeopleStructure', component: PeopleStructure },
         { path: 'chat', name: 'Chat', component: Chat },
         { path: 'notice', name: 'Notice', component: Notice },
+        { path: 'announcement', name: 'Announcement', component: Announcement },
       ]
     },
     {

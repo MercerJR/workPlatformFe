@@ -81,14 +81,24 @@
               <span slot="title">群组</span>
             </el-menu-item>
           </el-submenu>
-          <el-menu-item index="3" disabled>
-            <i class="el-icon-document"></i>
-            <span slot="title">导航三</span>
-          </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span slot="title">导航四</span>
-          </el-menu-item>
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-notebook-2"></i>
+              <span slot="title">办公小能手</span>
+            </template>
+            <el-menu-item index="/home/announcement">
+              <i class="el-icon-circle-plus"></i>
+              <span slot="title">消息推送</span>
+            </el-menu-item>
+            <el-menu-item index="">
+              <i class="el-icon-s-custom"></i>
+              <span slot="title">待办事项</span>
+            </el-menu-item>
+            <el-menu-item index="">
+              <i class="el-icon-milk-tea"></i>
+              <span slot="title">文档中心</span>
+            </el-menu-item>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <el-main>
