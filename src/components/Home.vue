@@ -12,6 +12,8 @@
         :router="isRouter"
       >
         <el-menu-item index="/home">MERCER'S WORK PLATFORM</el-menu-item>
+        <el-menu-item index="/home/notice">消息中心</el-menu-item>
+        <el-menu-item index="/back_home">管理后台</el-menu-item>
         <el-submenu index="2">
           <template slot="title">{{
             this.$root.currentStudioBaseInfo.studioName == ""
@@ -27,8 +29,9 @@
             {{ item.studioName }}
           </el-menu-item>
         </el-submenu>
-        <el-menu-item index="/home/notice">消息中心</el-menu-item>
-        <el-menu-item index="/back_home">管理后台</el-menu-item>
+        <el-menu-item index="create_studio/"
+          ><i class="el-icon-plus"></i
+        ></el-menu-item>
         <el-menu-item index="/home/myself" style="float: right">{{
           userBaseInfo.name
         }}</el-menu-item>
@@ -39,7 +42,34 @@
           ><i class="el-icon-switch-button"></i
         ></el-menu-item>
       </el-menu>
+
+      <!-- 创建工作室dialog -->
+      <el-dialog
+        title="新建工作室"
+        :visible.sync="createStudioDialogVisible"
+        width="30%"
+      >
+        <div>
+          <span>请输入工作室名称</span>
+          <el-input v-model="inputStudioName"></el-input>
+        </div>
+        <div style="margin-top: 20px">
+          <span>请输入工作室简称</span>
+          <el-input v-model="inputStudioAbbreviation"></el-input>
+        </div>
+        <div style="margin-top: 20px">
+          <span>请输入工作室类型</span>
+          <el-input v-model="inputClassify"></el-input>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="createStudioDialogVisible = false"
+            >取 消</el-button
+          >
+          <el-button type="primary" @click="createStudio">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
+
     <el-container>
       <el-aside :width="isCollapse ? '70px' : '210px'">
         <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
@@ -90,7 +120,7 @@
               <i class="el-icon-circle-plus"></i>
               <span slot="title">消息推送</span>
             </el-menu-item>
-            <el-menu-item index="">
+            <el-menu-item index="/home/todo">
               <i class="el-icon-s-custom"></i>
               <span slot="title">待办事项</span>
             </el-menu-item>
@@ -126,6 +156,11 @@ export default {
           studioAbbreviation: "",
         },
       ],
+      createStudioDialogVisible: false,
+
+      inputStudioName: "",
+      inputStudioAbbreviation: "",
+      inputClassify: "",
     };
   },
   methods: {
@@ -141,6 +176,10 @@ export default {
       if (prefix == "shiftStudio") {
         var studioId = key.split("/")[1];
         this.shiftStudio(studioId);
+        return;
+      }
+      if (prefix == "create_studio") {
+        this.createStudioDialogVisible = true;
         return;
       }
       this.$router.push(key);
@@ -173,6 +212,27 @@ export default {
             this.handleNotLogin(res.data.code);
           }
         });
+    },
+    createStudio() {
+      var url = this.constant.baseUrl + "/studio/create";
+      var createReq = {
+        studioName: this.inputStudioName,
+        studioAbbreviation: this.inputStudioAbbreviation,
+        classify: this.inputClassify,
+      };
+      var jsonParam = JSON.stringify(createReq);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+        });
+      this.createStudioDialogVisible = false;
     },
   },
   created() {

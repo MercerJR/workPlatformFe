@@ -22,6 +22,7 @@ import PeopleStructure from '@/components/address_book/PeopleStructure'
 import Chat from '@/components/Chat'
 import Notice from '@/components/Notice'
 import Announcement from '@/components/Announcement'
+import Todo from '@/components/Todo'
 
 Vue.use(Router)
 
@@ -47,6 +48,7 @@ export default new Router({
         { path: 'chat', name: 'Chat', component: Chat },
         { path: 'notice', name: 'Notice', component: Notice },
         { path: 'announcement', name: 'Announcement', component: Announcement },
+        { path: 'todo', name: 'Todo', component: Todo },
       ]
     },
     {

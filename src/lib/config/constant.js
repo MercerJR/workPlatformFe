@@ -28,7 +28,7 @@ export default {
             this.getStudioBaseInfo(studioId);
             console.log(this.$root.currentStudioBaseInfo);
             //在后台记录正在使用的工作室
-            this.recordCurrentStudio();
+            this.recordCurrentStudio(studioId);
             //在localStorage中存储存储studioId
             localStorage.setItem("currentStudioId", studioId);
             //切换后刷新页面
@@ -58,9 +58,9 @@ export default {
                     }
                 });
         }
-        Vue.prototype.recordCurrentStudio = function () {
+        Vue.prototype.recordCurrentStudio = function (studioId) {
             var url = this.constant.baseUrl + "/studio/record_current";
-            var jsonParam = JSON.stringify(this.$root.currentStudioBaseInfo.studioId);
+            var jsonParam = JSON.stringify(studioId);
             this.$axios
                 .post(url, jsonParam, {
                     headers: {
