@@ -41,7 +41,7 @@
               type="primary"
               size="medium"
               style="float: right"
-              @click="inviteCodeDialogVisible = true"
+              @click="openInviteDialog"
               >邀请成员加入工作室</el-button
             >
             <el-button
@@ -120,6 +120,9 @@
       <span>成员可输入企业邀请码加入企业</span>
       <br />
       <h1 style="font-size: 30px">{{ inviteCode }}</h1>
+      <el-button type="primary" round @click="initInviteCode"
+        >刷新邀请码</el-button
+      >
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="inviteCodeDialogVisible = false"
           >确定</el-button
@@ -162,7 +165,7 @@ export default {
     return {
       departmentList: [],
       selectedDepartment: {},
-      selectedMember:{},
+      selectedMember: {},
       memberList: [],
       newDepartment: {
         departmentName: "",
@@ -260,8 +263,8 @@ export default {
           }
         });
     },
-    openChangeDepartmentDialog(member){
-      this.changeDepartmentDialogVisible = true
+    openChangeDepartmentDialog(member) {
+      this.changeDepartmentDialogVisible = true;
       this.selectedMember = member;
     },
     changeDepartmentFunc() {
@@ -287,6 +290,53 @@ export default {
           this.getDepartmentMemberList(oldDepartmentId);
         });
       this.handleClose();
+    },
+    openInviteDialog() {
+      this.inviteCodeDialogVisible = true;
+      this.getInviteCode();
+    },
+    initInviteCode() {
+      var url = this.constant.baseUrl + "/studio/init_invite_code";
+      var initInviteCodeReq = {
+        studioId: localStorage.getItem("currentStudioId"),
+      };
+      var jsonParam = JSON.stringify(initInviteCodeReq);
+      this.$axios
+        .post(url, jsonParam, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          this.alertMessage(res);
+          this.handleNotLogin(res.data.code);
+          this.getInviteCode();
+        });
+    },
+    getInviteCode() {
+      var currentStudioId = localStorage.getItem("currentStudioId");
+      var url =
+        this.constant.baseUrl +
+        "/studio/show_invite_code/" +
+        currentStudioId;
+      this.$axios
+        .get(url, {
+          headers: {
+            token: this.$root.token,
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            console.log(res.data);
+            this.inviteCode = res.data.data;
+          } else {
+            this.alertMessage(res);
+            console.log(res.data);
+            this.handleNotLogin(res.data.code);
+          }
+        });
     },
   },
   created() {
