@@ -97,5 +97,15 @@ export default {
             studioId = studioId == null ? 0 : studioId;
             return studioId;
         }
+        Vue.prototype.getIconText = function (name) {
+            var text;
+            if (name.length <= 1) {
+                text = name;
+            } else {
+                text = name.substr(-2, 2);
+            }
+            console.log("in");
+            return text;
+        }
     }
 }  

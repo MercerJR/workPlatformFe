@@ -10,7 +10,7 @@
                 <el-row>
                   <el-col :span="4">
                     <div class="block">
-                      <el-avatar :size="45" :src="scope.row.icon"></el-avatar>
+                      <el-avatar :size="45" class="icon">{{getIconText(scope.row.chatName)}}</el-avatar>
                     </div>
                   </el-col>
                   <el-col :span="20">
@@ -40,7 +40,7 @@
             <el-row>
               <el-col :span="1">
                 <div class="block">
-                  <el-avatar :size="40" :src="selectedChat.icon"></el-avatar>
+                  <el-avatar :size="40" class="icon">{{getIconText(selectedChat.chatName)}}</el-avatar>
                 </div>
               </el-col>
               <el-col :span="23">
@@ -64,7 +64,9 @@
                   <el-row>
                     <el-col :span="2">
                       <div>
-                        <el-avatar :size="40" :src="item.icon"></el-avatar>
+                        <el-avatar :size="40" class="icon">
+                          {{ getIconText(item.senderName) }}
+                        </el-avatar>
                       </div>
                     </el-col>
                     <el-col :span="22">
@@ -77,6 +79,7 @@
                           "
                           >{{ item.senderName }}</span
                         >
+                        <span>{{ item.time }}</span>
                         <el-card shadow="hover">
                           <span>{{
                             item.targetType == 2
@@ -139,8 +142,7 @@
           </div>
           <!-- 底部按钮 -->
           <div style="margin-top: 15px" @keyup.enter="sendMessage">
-            <el-button type="primary" @click="sendMessage">发送</el-button>
-            <el-button type="success" @click="upload">上传</el-button>
+            <el-button type="success" @click="sendMessage">发送</el-button>
           </div>
         </div>
       </el-col>
@@ -195,7 +197,6 @@ export default {
   destroyed() {
     this.ws.close(); //离开路由之后断开websocket连接
   },
-
   methods: {
     initWebSocket() {
       //初始化weosocket
@@ -483,5 +484,8 @@ export default {
 }
 .outsideTypeClass {
   color: #e6a23c;
+}
+.icon{
+  background-color: #409EFF;
 }
 </style>

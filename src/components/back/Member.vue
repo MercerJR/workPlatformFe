@@ -44,12 +44,6 @@
               @click="openInviteDialog"
               >邀请成员加入工作室</el-button
             >
-            <el-button
-              type="primary"
-              size="medium"
-              style="float: right; margin-right: 10px"
-              >添加成员</el-button
-            >
           </div>
           <div style="margin-top: 15px">
             <el-table :data="memberList" size="medium" style="width: 100%">
@@ -57,7 +51,9 @@
                 <template slot-scope="scope">
                   <el-row>
                     <el-col :span="6">
-                      <el-avatar :size="35" :src="scope.row.icon"></el-avatar>
+                      <el-avatar :size="35" class="icon">{{
+                        getIconText(scope.row.insideAlias)
+                      }}</el-avatar>
                     </el-col>
                     <el-col :span="18">
                       <div style="margin-top: 5px">
@@ -317,9 +313,7 @@ export default {
     getInviteCode() {
       var currentStudioId = localStorage.getItem("currentStudioId");
       var url =
-        this.constant.baseUrl +
-        "/studio/show_invite_code/" +
-        currentStudioId;
+        this.constant.baseUrl + "/studio/show_invite_code/" + currentStudioId;
       this.$axios
         .get(url, {
           headers: {
@@ -354,5 +348,8 @@ export default {
   font-size: 12px;
   border-width: 0.5px;
   text-align: left;
+}
+.icon {
+  background-color: #409eff;
 }
 </style>

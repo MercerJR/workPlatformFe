@@ -39,8 +39,10 @@
               <el-avatar
                 shape="square"
                 :size="90"
-                :src="studioInfo.studioIcon"
-              ></el-avatar>
+                class="icon"
+              >
+              {{getStudioIconText(studioInfo.studioName)}}
+              </el-avatar>
             </el-col>
             <el-col :span="21">
               <div>
@@ -303,6 +305,9 @@ export default {
           this.handleNotLogin(res.data.code);
         });
     },
+    getStudioIconText(studioName) {
+      return studioName.substr(0,1);
+    },
   },
   created() {
     this.getStudioInfo();
@@ -323,5 +328,8 @@ export default {
 }
 .inputForm {
   width: 95%;
+}
+.icon{
+  background-color: #409EFF;
 }
 </style>

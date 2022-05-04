@@ -42,7 +42,7 @@
                 <template slot-scope="scope">
                   <el-row>
                     <el-col :span="6">
-                      <el-avatar :size="35" :src="scope.row.icon"></el-avatar>
+                      <el-avatar :size="35" class="icon">{{getIconText(scope.row.insideAlias)}}</el-avatar>
                     </el-col>
                     <el-col :span="18">
                       <div style="margin-top: 5px">
@@ -192,5 +192,8 @@ export default {
   font-size: 12px;
   border-width: 0.5px;
   text-align: left;
+}
+.icon{
+  background-color: #409EFF;
 }
 </style>

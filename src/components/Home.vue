@@ -11,7 +11,7 @@
         active-text-color="#ffd04b"
         :router="isRouter"
       >
-        <el-menu-item index="/home">MERCER'S WORK PLATFORM</el-menu-item>
+        <el-menu-item index="/home"><el-avatar :src="url"></el-avatar> MERCER'S WORK PLATFORM</el-menu-item>
         <el-menu-item index="/home/notice">消息中心</el-menu-item>
         <el-menu-item index="/back_home">管理后台</el-menu-item>
         <el-submenu index="2">
@@ -124,7 +124,7 @@
               <i class="el-icon-s-custom"></i>
               <span slot="title">待办事项</span>
             </el-menu-item>
-            <el-menu-item index="">
+            <el-menu-item index="/home/document">
               <i class="el-icon-milk-tea"></i>
               <span slot="title">文档中心</span>
             </el-menu-item>
@@ -161,6 +161,7 @@ export default {
       inputStudioName: "",
       inputStudioAbbreviation: "",
       inputClassify: "",
+      url:"https://km.sankuai.com/api/file/cdn/1304813179/1787901133?contentType=1&isNewContent=false&isNewContent=false",
     };
   },
   methods: {

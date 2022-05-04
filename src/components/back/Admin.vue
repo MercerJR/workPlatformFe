@@ -38,7 +38,7 @@
             <el-row>
               <el-col :span="2">
                 <div class="block">
-                  <el-avatar :size="40" :src="scope.row.icon"></el-avatar>
+                  <el-avatar :size="40" class="icon">{{getIconText(scope.row.insideAlias)}}</el-avatar>
                 </div>
               </el-col>
               <el-col :span="22">
@@ -257,5 +257,8 @@ export default {
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;
+}
+.icon{
+  background-color: #409EFF;
 }
 </style>
